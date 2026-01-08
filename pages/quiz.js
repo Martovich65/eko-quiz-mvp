@@ -89,33 +89,48 @@ const [offerType, setOfferType] = useState(null);
       </li>
     </ul>
   </>
-)}
-{step === 5 && (
+)}{step === 5 && (
   <>
     <h2>Питання 6 з 6</h2>
     <p>Який варіант догляду вам більше підходить?</p>
 
     <ul style={{ listStyle: "none", padding: 0 }}>
       <li>
-        <button onClick={() => setStep(6)}>
-          <button onClick={() => {
-  setOfferType("min");
-  setStep(7);
-}}>
+        <button
+          onClick={() => {
+            setOfferType("min");
+            setStep(7);
+          }}
+        >
+          Мінімальне рішення (окремі засоби)
+        </button>
+      </li>
 
       <li>
-        <button onClick={() => setStep(6)}>
-      <button onClick={() => {
-  setOfferType("set");
-  setStep(7);
-}}>
+        <button
+          onClick={() => {
+            setOfferType("optimal");
+            setStep(7);
+          }}
+        >
+          Оптимальний набір (рекомендовано)
+        </button>
+      </li>
 
       <li>
-        <button onClick={() => setStep(6)}>
-          <button onClick={() => {
-  setOfferType("max");
-  setStep(7);
-}}>
+        <button
+          onClick={() => {
+            setOfferType("max");
+            setStep(7);
+          }}
+        >
+          Розширений догляд (максимальний ефект)
+        </button>
+      </li>
+    </ul>
+  </>
+)}
+
 
       {step === 1 && (
 <ul style={{ listStyle: "none", padding: 0 }}>
