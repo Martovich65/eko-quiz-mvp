@@ -47,10 +47,27 @@ export default function Quiz() {
 {step === 3 && (
   <>
     <h2>Питання 3 з 6</h2>
-    <p>Наступний крок (поки заглушка)</p>
+    <p>Скільки вам років?</p>
+
+    <ul style={{ listStyle: "none", padding: 0 }}>
+      <li>
+        <button onClick={() => setStep(4)}>30–35</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(4)}>36–40</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(4)}>41–45</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(4)}>46–50</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(4)}>51+</button>
+      </li>
+    </ul>
   </>
 )}
-
 
       {step === 1 && (
 <ul style={{ listStyle: "none", padding: 0 }}>
