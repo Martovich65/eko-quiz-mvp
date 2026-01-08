@@ -11,6 +11,16 @@ export default function Quiz() {
 
       <h2>Питання 1 з 6</h2>
       <p>Який у вас тип шкіри?</p>
+{step === 2 && (
+  <>
+    <h2>Питання 2 з 6</h2>
+    <p>Яка проблема турбує вас найбільше?</p>
+
+    <p>
+      <strong>Обраний тип шкіри:</strong> {skinType}
+    </p>
+  </>
+)}
 
       <ul style={{ listStyle: "none", padding: 0 }}>
   <li>
