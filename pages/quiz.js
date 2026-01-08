@@ -1,5 +1,11 @@
+import { useState } from "react";
+
 export default function Quiz() {
+  const [step, setStep] = useState(1);
+  const [skinType, setSkinType] = useState(null);
+
   return (
+
     <main style={{ maxWidth: 600, margin: "40px auto", fontFamily: "sans-serif" }}>
       <h1>Онлайн-діагностика шкіри</h1>
 
