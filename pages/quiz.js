@@ -68,6 +68,27 @@ export default function Quiz() {
     </ul>
   </>
 )}
+{step === 4 && (
+  <>
+    <h2>Питання 4 з 6</h2>
+    <p>Чи є у вас особливості або чутливість шкіри?</p>
+
+    <ul style={{ listStyle: "none", padding: 0 }}>
+      <li>
+        <button onClick={() => setStep(5)}>Чутлива</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(5)}>Схильна до почервонінь</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(5)}>Є алергічні реакції</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(5)}>Без особливостей</button>
+      </li>
+    </ul>
+  </>
+)}
 
       {step === 1 && (
 <ul style={{ listStyle: "none", padding: 0 }}>
