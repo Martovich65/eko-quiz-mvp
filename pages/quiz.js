@@ -99,5 +99,8 @@ export default function Quiz() {
     </button>
   </li>
 </ul>)}
+    </main>
+  );
+}
 
 
