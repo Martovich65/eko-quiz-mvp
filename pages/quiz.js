@@ -98,25 +98,24 @@ const [offerType, setOfferType] = useState(null);
     <ul style={{ listStyle: "none", padding: 0 }}>
       <li>
         <button onClick={() => setStep(6)}>
-          🔹 Мінімальне рішення (окремі засоби)
-        </button>
-      </li>
+          <button onClick={() => {
+  setOfferType("min");
+  setStep(7);
+}}>
 
       <li>
         <button onClick={() => setStep(6)}>
-          ⭐ Оптимальний набір (рекомендовано)
-        </button>
-      </li>
+      <button onClick={() => {
+  setOfferType("set");
+  setStep(7);
+}}>
 
       <li>
         <button onClick={() => setStep(6)}>
-          💎 Розширений догляд (максимальний ефект)
-        </button>
-      </li>
-    </ul>
-  </>
-)}
-
+          <button onClick={() => {
+  setOfferType("max");
+  setStep(7);
+}}>
 
       {step === 1 && (
 <ul style={{ listStyle: "none", padding: 0 }}>
