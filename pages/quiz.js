@@ -89,6 +89,12 @@ export default function Quiz() {
     </ul>
   </>
 )}
+{step === 5 && (
+  <>
+    <h2>Питання 5 з 6</h2>
+    <p>Наступний крок (поки заглушка)</p>
+  </>
+)}
 
       {step === 1 && (
 <ul style={{ listStyle: "none", padding: 0 }}>
