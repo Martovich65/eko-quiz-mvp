@@ -24,8 +24,27 @@ export default function Quiz() {
     <p>
       <strong>Обраний тип шкіри:</strong> {skinType}
     </p>
+
+    <ul style={{ listStyle: "none", padding: 0 }}>
+      <li>
+        <button onClick={() => setStep(3)}>Сухість / стягнутість</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(3)}>Зморшки</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(3)}>Пігментація</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(3)}>Постакне</button>
+      </li>
+      <li>
+        <button onClick={() => setStep(3)}>Чорні цятки / пори</button>
+      </li>
+    </ul>
   </>
 )}
+
 
       {step === 1 && (
 <ul style={{ listStyle: "none", padding: 0 }}>
