@@ -13,12 +13,49 @@ export default function Quiz() {
       <p>Який у вас тип шкіри?</p>
 
       <ul style={{ listStyle: "none", padding: 0 }}>
-        <li><button>Суха</button></li>
-        <li><button>Нормальна</button></li>
-        <li><button>Комбінована</button></li>
-        <li><button>Жирна</button></li>
-        <li><button>Важко сказати</button></li>
-      </ul>
-    </main>
-  );
-}
+  <li>
+    <button onClick={() => {
+      setSkinType("Суха");
+      setStep(2);
+    }}>
+      Суха
+    </button>
+  </li>
+
+  <li>
+    <button onClick={() => {
+      setSkinType("Нормальна");
+      setStep(2);
+    }}>
+      Нормальна
+    </button>
+  </li>
+
+  <li>
+    <button onClick={() => {
+      setSkinType("Комбінована");
+      setStep(2);
+    }}>
+      Комбінована
+    </button>
+  </li>
+
+  <li>
+    <button onClick={() => {
+      setSkinType("Жирна");
+      setStep(2);
+    }}>
+      Жирна
+    </button>
+  </li>
+
+  <li>
+    <button onClick={() => {
+      setSkinType("Важко сказати");
+      setStep(2);
+    }}>
+      Важко сказати
+    </button>
+  </li>
+</ul>
+
