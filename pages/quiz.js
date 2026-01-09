@@ -73,8 +73,12 @@ const [offerType, setOfferType] = useState(null);
 </ul>
 
 <button
-  onClick={() => setStep(3)}
-  style={{ marginTop: 20, padding: "10px 16px" }}
+  onClick={() => {
+    if (problems.length === 0) {
+      return;
+    }
+    setStep(3);
+  }}
 >
   Продовжити
 </button>
