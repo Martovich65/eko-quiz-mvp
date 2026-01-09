@@ -56,6 +56,7 @@ const [offerType, setOfferType] = useState(null);
               ? prev.filter((p) => p !== problem)
               : [...prev, problem]
           );
+    setShowProblemError(false);
         }}
       style={{
   background: problems.includes(problem) ? "#e6f4ea" : "#f0f0f0",
