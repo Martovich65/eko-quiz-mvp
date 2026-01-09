@@ -34,6 +34,12 @@ const [offerType, setOfferType] = useState(null);
       <strong>Обраний тип шкіри:</strong> {skinType}
     </p>
 
+{showProblemError && (
+  <p style={{ color: "#2f855a", fontWeight: 600 }}>
+    Будь ласка, оберіть хоча б одну проблему яка зараз актуальна для Вас !
+  </p>
+)}
+
     <ul style={{ listStyle: "none", padding: 0 }}>
   {[
     "Сухість / стягнутість",
