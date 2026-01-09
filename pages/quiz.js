@@ -63,15 +63,19 @@ const [offerType, setOfferType] = useState(null);
               : [...prev, problem]
           );
         }}
-        style={{
-          background: problems.includes(problem) ? "#2f855a" : "#f0f0f0",
-          color: problems.includes(problem) ? "white" : "black",
-          border: "1px solid #ccc",
-          padding: "6px 10px",
-          cursor: "pointer",
-          width: "100%",
-          textAlign: "left"
-        }}
+       style={{
+  border: "2px solid #2f855a",
+  background: "#f0fff4",
+  padding: "14px 16px",
+  margin: "12px 0 16px",
+  borderRadius: "8px",
+  fontWeight: 700,
+  fontSize: "18px",
+  lineHeight: "1.4",
+  color: "#2f855a",
+  textAlign: "center"
+}}
+
       >
         {problem}
       </button>
