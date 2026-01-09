@@ -3,6 +3,7 @@ import { useState } from "react";
 export default function Quiz() {
   const [step, setStep] = useState(1);
   const [skinType, setSkinType] = useState(null);
+  const [problems, setProblems] = useState([]);
 const [offerType, setOfferType] = useState(null);
 
   return (
