@@ -59,18 +59,27 @@ const [offerType, setOfferType] = useState(null);
     setShowProblemError(false);
         }}
 style={{
-  border: "2px solid #2f855a",
-  background: problems.includes(problem) ? "#2f855a" : "#eeeeee",
-  color: problems.includes(problem) ? "#ffffff" : "#000000",
-  padding: "14px 16px",
-  margin: "12px 0 16px",
-  borderRadius: "8px",
-  fontWeight: 700,
-  fontSize: "18px",
+  background: problems.includes(problem) ? "#2f855a" : "#f4f4f4",
+  color: problems.includes(problem) ? "#ffffff" : "#111827",
+  border: "1px solid #cfcfcf",
+  padding: "10px 12px",
+  margin: "6px 0",
+  display: "block",
+  width: "100%",
+  textAlign: "left",
+  cursor: "pointer",
+  fontSize: "15px",
   lineHeight: "1.4",
-  textAlign: "center",
-  cursor: "pointer"
+  borderRadius: 0,
+  outline: "none",
 }}
+onFocus={(e) =>
+  (e.currentTarget.style.boxShadow =
+    "0 0 0 3px rgba(47,133,90,0.12)")
+}
+onBlur={(e) =>
+  (e.currentTarget.style.boxShadow = "none")
+}
 
       >
         {problem}
