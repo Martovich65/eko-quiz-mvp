@@ -82,8 +82,11 @@ const [offerType, setOfferType] = useState(null);
 <button
   onClick={() => {
     if (problems.length === 0) {
+      setShowProblemError(true);
       return;
     }
+
+    setShowProblemError(false);
     setStep(3);
   }}
 >
