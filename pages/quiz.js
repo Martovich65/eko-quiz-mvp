@@ -34,22 +34,51 @@ const [offerType, setOfferType] = useState(null);
     </p>
 
     <ul style={{ listStyle: "none", padding: 0 }}>
-      <li>
-        <button onClick={() => setStep(3)}>Сухість / стягнутість</button>
-      </li>
-      <li>
-        <button onClick={() => setStep(3)}>Зморшки</button>
-      </li>
-      <li>
-        <button onClick={() => setStep(3)}>Пігментація</button>
-      </li>
-      <li>
-        <button onClick={() => setStep(3)}>Постакне</button>
-      </li>
-      <li>
-        <button onClick={() => setStep(3)}>Чорні цятки / пори</button>
-      </li>
-    </ul>
+  {[
+    "Сухість / стягнутість",
+    "Зморшки",
+    "Пігментація",
+    "Постакне",
+    "Чорні цятки / пори",
+    "Акне / прищі",
+    "Темні кола та мішки під очима",
+    "Гусячі лапки (зона очей)",
+    "Міліуми (білі точки під шкірою)",
+    "Розацеа",
+    "Втрата пружності шкіри в зоні шиї"
+  ].map((problem) => (
+    <li key={problem} style={{ marginBottom: 8 }}>
+      <button
+        onClick={() => {
+          setProblems((prev) =>
+            prev.includes(problem)
+              ? prev.filter((p) => p !== problem)
+              : [...prev, problem]
+          );
+        }}
+        style={{
+          background: problems.includes(problem) ? "#2f855a" : "#f0f0f0",
+          color: problems.includes(problem) ? "white" : "black",
+          border: "1px solid #ccc",
+          padding: "6px 10px",
+          cursor: "pointer",
+          width: "100%",
+          textAlign: "left"
+        }}
+      >
+        {problem}
+      </button>
+    </li>
+  ))}
+</ul>
+
+<button
+  onClick={() => setStep(3)}
+  style={{ marginTop: 20, padding: "10px 16px" }}
+>
+  Продовжити
+</button>
+
   </>
 )}
 {step === 3 && (
