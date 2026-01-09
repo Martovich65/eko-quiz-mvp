@@ -80,6 +80,23 @@ const [offerType, setOfferType] = useState(null);
     </li>
   ))}
 </ul>
+{showProblemError && (
+  <div
+    style={{
+      border: "2px solid #2f855a",
+      background: "#f0fff4",
+      padding: "14px",
+      margin: "14px 0",
+      borderRadius: "8px",
+      fontSize: "20px",
+      fontWeight: 700,
+      color: "#2f855a",
+      textAlign: "center"
+    }}
+  >
+    Будь ласка, оберіть хоча б одну проблему яка зараз актуальна для Вас!
+  </div>
+)}
 
 <button
   onClick={() => {
