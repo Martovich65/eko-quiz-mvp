@@ -10,11 +10,11 @@ const [offerType, setOfferType] = useState(null);
   const [sensitivity, setSensitivity] = useState(null);
   const [showSensitivityError, setShowSensitivityError] = useState(false);
 const [showProblemError, setShowProblemError] = useState(false);
-    const optionStyle = (isActive, width = "100%") => ({
+const optionStyle = (isActive, width = "100%") => ({
   appearance: "none",
   WebkitAppearance: "none",
 
-  background: isActive ? "#2f855a" : "#f4f4f4",
+  backgroundColor: isActive ? "#2f855a" : "#f4f4f4",
   color: isActive ? "#ffffff" : "#111827",
 
   border: "1px solid #cfcfcf",
@@ -24,8 +24,8 @@ const [showProblemError, setShowProblemError] = useState(false);
 
   display: "block",
   width: width,
-  textAlign: "left",
 
+  textAlign: "left",
   cursor: "pointer",
 
   fontSize: "16px",
@@ -34,7 +34,11 @@ const [showProblemError, setShowProblemError] = useState(false);
 
   borderRadius: 0,
   boxSizing: "border-box",
+
+  // 🔥 ВАЖНО: убираем системный стиль кнопки
+  backgroundImage: "none",
 });
+
 
   return (
 
