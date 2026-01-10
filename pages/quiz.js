@@ -30,12 +30,41 @@ const [showProblemError, setShowProblemError] = useState(false);
     <main style={{ maxWidth: 600, margin: "40px auto", fontFamily: "sans-serif" }}>
       <h1>Онлайн-діагностика шкіри</h1>
 
-      {step === 1 && (
+{step === 1 && (
   <>
     <h2>Питання 1 з 6</h2>
     <p>Який у вас тип шкіри?</p>
+
+    <ul style={{ listStyle: "none", padding: 0 }}>
+      {[
+        "Суха",
+        "Нормальна",
+        "Комбінована",
+        "Жирна",
+        "Важко сказати"
+      ].map((type) => (
+        <li key={type}>
+          <button
+            onClick={() => setSkinType(type)}
+            style={optionStyle(skinType === type)}
+          >
+            {type}
+          </button>
+        </li>
+      ))}
+    </ul>
+
+    <button
+      onClick={() => {
+        if (!skinType) return;
+        setStep(2);
+      }}
+    >
+      Продовжити
+    </button>
   </>
 )}
+
 
 {step === 2 && (
   <>
