@@ -76,6 +76,7 @@ const [showProblemError, setShowProblemError] = useState(false);
   </>
 )}
 
+
 {step === 2 && (
   <>
     <h2>Питання 2 з 6</h2>
