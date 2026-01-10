@@ -89,6 +89,23 @@ onBlur={(e) =>
     </li>
   ))}
 </ul>
+{problems.length > 0 && (
+  <div
+    style={{
+      marginTop: 16,
+      padding: "12px 14px",
+      background: "#f0fff4",
+      border: "1px solid #2f855a",
+      borderRadius: 6,
+      color: "#2f855a",
+      fontSize: 15,
+      lineHeight: 1.4
+    }}
+  >
+    <strong>Ви обрали:</strong> {problems.join(", ")}
+  </div>
+)}
+
 {showProblemError && (
   <div
     style={{
