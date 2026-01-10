@@ -150,7 +150,7 @@ onBlur={(e) =>
       <li>
        <button
   onClick={() => {
-    setAge("30–35");
+    setAgeRange("30–35");
     setShowAgeError(false);
     setStep(4);
   }}
@@ -160,9 +160,9 @@ onBlur={(e) =>
 
       </li>
       <li>
-   <button
+ <button
   onClick={() => {
-    setAge("36–40");
+    setAgeRange("36–40");
     setShowAgeError(false);
     setStep(4);
   }}
@@ -172,9 +172,9 @@ onBlur={(e) =>
 
       </li>
       <li>
-       <button
+ <button
   onClick={() => {
-    setAge("41–45");
+    setAgeRange("41–45");
     setShowAgeError(false);
     setStep(4);
   }}
@@ -186,7 +186,7 @@ onBlur={(e) =>
       <li>
 <button
   onClick={() => {
-    setAge("46–50");
+    setAgeRange("46–50");
     setShowAgeError(false);
     setStep(4);
   }}
@@ -196,9 +196,9 @@ onBlur={(e) =>
 
       </li>
       <li>
- <button
+<button
   onClick={() => {
-    setAge("51+");
+    setAgeRange("51+");
     setShowAgeError(false);
     setStep(4);
   }}
