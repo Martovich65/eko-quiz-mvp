@@ -218,9 +218,10 @@ onBlur={(e) =>
 
     <ul style={{ listStyle: "none", padding: 0 }}>
       <li>
-       <button
+<button
   onClick={() => {
     setSensitivity("Чутлива");
+    setShowSensitivityError(false);
     setStep(5);
   }}
 >
@@ -228,9 +229,10 @@ onBlur={(e) =>
 </button>
 
       </li>
-      <li><button
+      <button
   onClick={() => {
     setSensitivity("Схильна до почервонінь");
+    setShowSensitivityError(false);
     setStep(5);
   }}
 >
@@ -239,9 +241,10 @@ onBlur={(e) =>
 
       </li>
       <li>
-       <button
+ <button
   onClick={() => {
     setSensitivity("Є алергічні реакції");
+    setShowSensitivityError(false);
     setStep(5);
   }}
 >
@@ -250,9 +253,10 @@ onBlur={(e) =>
 
       </li>
       <li>
-        <button
+ <button
   onClick={() => {
     setSensitivity("Без особливостей");
+    setShowSensitivityError(false);
     setStep(5);
   }}
 >
