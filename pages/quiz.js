@@ -11,19 +11,30 @@ const [offerType, setOfferType] = useState(null);
   const [showSensitivityError, setShowSensitivityError] = useState(false);
 const [showProblemError, setShowProblemError] = useState(false);
     const optionStyle = (isActive, width = "100%") => ({
-    background: isActive ? "#2f855a" : "#f4f4f4",
-    color: isActive ? "#ffffff" : "#111827",
-    border: "1px solid #cfcfcf",
-    padding: "12px 14px",
-    margin: "6px 0",
-    display: "block",
-    width: width,
-    textAlign: "left",
-    cursor: "pointer",
-    fontSize: "15px",
-    lineHeight: "1.4",
-    borderRadius: 0,
-  });
+  appearance: "none",
+  WebkitAppearance: "none",
+
+  background: isActive ? "#2f855a" : "#f4f4f4",
+  color: isActive ? "#ffffff" : "#111827",
+
+  border: "1px solid #cfcfcf",
+
+  padding: "14px 16px",
+  margin: "8px 0",
+
+  display: "block",
+  width: width,
+  textAlign: "left",
+
+  cursor: "pointer",
+
+  fontSize: "16px",
+  fontWeight: 500,
+  lineHeight: "1.4",
+
+  borderRadius: 0,
+  boxSizing: "border-box",
+});
 
   return (
 
