@@ -129,19 +129,58 @@ onBlur={(e) =>
 
     <ul style={{ listStyle: "none", padding: 0 }}>
       <li>
-        <button onClick={() => setStep(4)}>30–35</button>
+        <button
+  onClick={() => {
+    setAgeRange("30–35");
+    setStep(4);
+  }}
+>
+  30–35
+</button>
+
+      </li>
+      <li><button
+  onClick={() => {
+    setAgeRange("36–40");
+    setStep(4);
+  }}
+>
+  36–40
+</button>
+
       </li>
       <li>
-        <button onClick={() => setStep(4)}>36–40</button>
+       <button
+  onClick={() => {
+    setAgeRange("41–45");
+    setStep(4);
+  }}
+>
+  41–45
+</button>
+
       </li>
       <li>
-        <button onClick={() => setStep(4)}>41–45</button>
+        <button
+  onClick={() => {
+    setAgeRange("46–50");
+    setStep(4);
+  }}
+>
+  46–50
+</button>
+
       </li>
       <li>
-        <button onClick={() => setStep(4)}>46–50</button>
-      </li>
-      <li>
-        <button onClick={() => setStep(4)}>51+</button>
+  <button
+  onClick={() => {
+    setAgeRange("51+");
+    setStep(4);
+  }}
+>
+  51+
+</button>
+
       </li>
     </ul>
   </>
