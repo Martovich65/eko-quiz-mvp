@@ -193,16 +193,47 @@ onBlur={(e) =>
 
     <ul style={{ listStyle: "none", padding: 0 }}>
       <li>
-        <button onClick={() => setStep(5)}>Чутлива</button>
+       <button
+  onClick={() => {
+    setSensitivity("Чутлива");
+    setStep(5);
+  }}
+>
+  Чутлива
+</button>
+
+      </li>
+      <li><button
+  onClick={() => {
+    setSensitivity("Схильна до почервонінь");
+    setStep(5);
+  }}
+>
+  Схильна до почервонінь
+</button>
+
       </li>
       <li>
-        <button onClick={() => setStep(5)}>Схильна до почервонінь</button>
+       <button
+  onClick={() => {
+    setSensitivity("Є алергічні реакції");
+    setStep(5);
+  }}
+>
+  Є алергічні реакції
+</button>
+
       </li>
       <li>
-        <button onClick={() => setStep(5)}>Є алергічні реакції</button>
-      </li>
-      <li>
-        <button onClick={() => setStep(5)}>Без особливостей</button>
+        <button
+  onClick={() => {
+    setSensitivity("Без особливостей");
+    setStep(5);
+  }}
+>
+  Без особливостей
+</button>
+
       </li>
     </ul>
   </>
