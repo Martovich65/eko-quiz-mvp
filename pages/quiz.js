@@ -60,8 +60,15 @@ const optionStyle = (isActive, width = "100%") => ({
       ].map((type) => (
         <li key={type}>
           <button
-            onClick={() => setSkinType(type)}
-            style={optionStyle(skinType === type)}
+          <button
+  style={{
+    background: "red",
+    color: "white",
+    padding: "30px",
+    fontSize: "20px"
+  }}
+>
+
           >
             {type}
           </button>
