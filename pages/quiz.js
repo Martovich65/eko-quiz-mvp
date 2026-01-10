@@ -5,6 +5,7 @@ export default function Quiz() {
   const [skinType, setSkinType] = useState(null);
   const [problems, setProblems] = useState([]);
 const [offerType, setOfferType] = useState(null);
+  const [ageRange, setAgeRange] = useState(null);
   const [showProblemError, setShowProblemError] = useState(false);
 
   return (
