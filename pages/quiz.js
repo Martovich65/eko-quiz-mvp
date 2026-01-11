@@ -314,9 +314,9 @@ onBlur={(e) =>
     <ul style={{ listStyle: "none", padding: 0 }}>
       <li>
         <button
+          type="button"
           onClick={() => {
             setOfferType("min");
-            setStep(7);
           }}
         >
           Мінімальне рішення (окремі засоби)
@@ -325,9 +325,9 @@ onBlur={(e) =>
 
       <li>
         <button
+          type="button"
           onClick={() => {
             setOfferType("optimal");
-            setStep(7);
           }}
         >
           Оптимальний набір (рекомендовано)
@@ -336,9 +336,9 @@ onBlur={(e) =>
 
       <li>
         <button
+          type="button"
           onClick={() => {
             setOfferType("max");
-            setStep(7);
           }}
         >
           Розширений догляд (максимальний ефект)
@@ -347,6 +347,11 @@ onBlur={(e) =>
     </ul>
   </>
 )}
+  
+    </main>
+  );
+}
+
 
 
       
