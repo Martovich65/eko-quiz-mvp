@@ -206,67 +206,33 @@ onBlur={(e) =>
     <p>Скільки вам років?</p>
 
     <ul style={{ listStyle: "none", padding: 0 }}>
-      <li>
-       <button
-  onClick={() => {
-    setAgeRange("30–35");
-    setShowAgeError(false);
-    setStep(4);
-  }}
->
-  30–35
-</button>
-
-      </li>
-      <li>
- <button
-  onClick={() => {
-    setAgeRange("36–40");
-    setShowAgeError(false);
-    setStep(4);
-  }}
->
-  36–40
-</button>
-
-      </li>
-      <li>
- <button
-  onClick={() => {
-    setAgeRange("41–45");
-    setShowAgeError(false);
-    setStep(4);
-  }}
->
-  41–45
-</button>
-
-      </li>
-      <li>
-<button
-  onClick={() => {
-    setAgeRange("46–50");
-    setShowAgeError(false);
-    setStep(4);
-  }}
->
-  46–50
-</button>
-
-      </li>
-      <li>
-<button
-  onClick={() => {
-    setAgeRange("51+");
-    setShowAgeError(false);
-    setStep(4);
-  }}
->
-  51+
-</button>
-
-      </li>
+      {[
+        "30–35",
+        "36–40",
+        "41–45",
+        "46–50",
+        "51+",
+      ].map((range) => (
+        <li key={range}>
+          <button
+            type="button"
+            style={optionStyle(ageRange === range)}
+            onClick={() => setAgeRange(range)}
+          >
+            {range}
+          </button>
+        </li>
+      ))}
     </ul>
+
+    <button
+      onClick={() => {
+        if (!ageRange) return;
+        setStep(4);
+      }}
+    >
+      Продовжити
+    </button>
   </>
 )}
 
