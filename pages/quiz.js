@@ -276,80 +276,47 @@ onBlur={(e) =>
     <h2>Питання 4 з 6</h2>
     <p>Чи є у вас особливості або чутливість шкіри?</p>
 
-    <ul style={{
-  background: sensitivity === "Чутлива" ? "#2f855a" : "#f4f4f4",
-  color: sensitivity === "Чутлива" ? "#ffffff" : "#111827",
-  border: "1px solid #cfcfcf",
-
-  // 🔑 высота — как у мульти выбора
-  padding: "12px 14px",
-
-  // 🔑 ширина — короче, чем у проблем
-  width: "48%",
-  margin: "8px auto",
-
-  display: "block",
-  textAlign: "center",
-  cursor: "pointer",
-
-  fontSize: "15px",
-  fontWeight: 600,
-  lineHeight: "1.4",
-
-  borderRadius: "6px",
-}}
-
-      <li>
-<button
-  onClick={() => {
-    setSensitivity("Чутлива");
-    setShowSensitivityError(false);
-    setStep(5);
-  }}
->
-  Чутлива
-</button>
-
-      </li>
-      <button
-  onClick={() => {
-    setSensitivity("Схильна до почервонінь");
-    setShowSensitivityError(false);
-    setStep(5);
-  }}
->
-  Схильна до почервонінь
-</button>
-
-      </li>
-      <li>
- <button
-  onClick={() => {
-    setSensitivity("Є алергічні реакції");
-    setShowSensitivityError(false);
-    setStep(5);
-  }}
->
-  Є алергічні реакції
-</button>
-
-      </li>
-      <li>
- <button
-  onClick={() => {
-    setSensitivity("Без особливостей");
-    setShowSensitivityError(false);
-    setStep(5);
-  }}
->
-  Без особливостей
-</button>
-
-      </li>
+    <ul style={{ listStyle: "none", padding: 0 }}>
+      {[
+        "Чутлива",
+        "Схильна до почервонінь",
+        "Є алергічні реакції",
+        "Без особливостей"
+      ].map((item) => (
+        <li key={item}>
+          <button
+            type="button"
+            onClick={() => {
+              setSensitivity(item);
+              setShowSensitivityError(false);
+            }}
+          >
+            {item}
+          </button>
+        </li>
+      ))}
     </ul>
-    
 
+    {showSensitivityError && (
+      <p style={{ color: "red" }}>
+        Будь ласка, оберіть варіант
+      </p>
+    )}
+
+    <button
+      onClick={() => {
+        if (!sensitivity) {
+          setShowSensitivityError(true);
+          return;
+        }
+        setStep(5);
+      }}
+    >
+      Продовжити
+    </button>
   </>
+)}
+
 )}{step === 5 && (
   <>
     <h2>Питання 6 з 6</h2>
