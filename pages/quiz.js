@@ -186,17 +186,25 @@ onBlur={(e) =>
 
 <button
   onClick={() => {
-    if (problems.length === 0) {
-      setShowProblemError(true);
-      return;
-    }
-
-    setShowProblemError(false);
-    setStep(3);
+    if (!skinType) return;
+    setStep(2);
+  }}
+  style={{
+    marginTop: 20,
+    width: "100%",
+    padding: "16px",
+    backgroundColor: "#2f855a",
+    color: "#ffffff",
+    fontSize: "17px",
+    fontWeight: 600,
+    border: "none",
+    borderRadius: "12px",
+    cursor: "pointer",
   }}
 >
   Продовжити
 </button>
+
 
   </>
 )}
