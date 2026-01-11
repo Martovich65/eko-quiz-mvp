@@ -251,6 +251,7 @@ onBlur={(e) =>
         <li key={item}>
           <button
             type="button"
+            style={optionStyle(sensitivity === item)}
             onClick={() => setSensitivity(item)}
           >
             {item}
