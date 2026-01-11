@@ -286,10 +286,7 @@ onBlur={(e) =>
         <li key={item}>
           <button
             type="button"
-            onClick={() => {
-              setSensitivity(item);
-              setShowSensitivityError(false);
-            }}
+            onClick={() => setSensitivity(item)}
           >
             {item}
           </button>
@@ -297,18 +294,9 @@ onBlur={(e) =>
       ))}
     </ul>
 
-    {showSensitivityError && (
-      <p style={{ color: "red" }}>
-        Будь ласка, оберіть варіант
-      </p>
-    )}
-
     <button
       onClick={() => {
-        if (!sensitivity) {
-          setShowSensitivityError(true);
-          return;
-        }
+        if (!sensitivity) return;
         setStep(5);
       }}
     >
@@ -316,6 +304,7 @@ onBlur={(e) =>
     </button>
   </>
 )}
+
 
 )}{step === 5 && (
   <>
