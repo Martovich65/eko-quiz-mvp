@@ -277,42 +277,43 @@ onBlur={(e) =>
     <p>Який варіант догляду вам більше підходить?</p>
 
     <ul style={{ listStyle: "none", padding: 0 }}>
-      <li>
-        <button
-          type="button"
-          onClick={() => {
-            setOfferType("min");
-          }}
-        >
-          Мінімальне рішення (окремі засоби)
-        </button>
-      </li>
-
-      <li>
-        <button
-          type="button"
-          onClick={() => {
-            setOfferType("optimal");
-          }}
-        >
-          Оптимальний набір (рекомендовано)
-        </button>
-      </li>
-
-      <li>
-        <button
-          type="button"
-          onClick={() => {
-            setOfferType("max");
-          }}
-        >
-          Розширений догляд (максимальний ефект)
-        </button>
-      </li>
+      {[
+        {
+          value: "min",
+          label: "Мінімальне рішення (окремі засоби)",
+        },
+        {
+          value: "optimal",
+          label: "Оптимальний набір (рекомендовано)",
+        },
+        {
+          value: "max",
+          label: "Розширений догляд (максимальний ефект)",
+        },
+      ].map((item) => (
+        <li key={item.value}>
+          <button
+            type="button"
+            style={optionStyle(offerType === item.value)}
+            onClick={() => setOfferType(item.value)}
+          >
+            {item.label}
+          </button>
+        </li>
+      ))}
     </ul>
+
+    <button
+      onClick={() => {
+        if (!offerType) return;
+        setStep(6);
+      }}
+    >
+      Продовжити
+    </button>
   </>
 )}
-  
+ 
     </main>
   );
 }
