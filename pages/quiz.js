@@ -347,37 +347,7 @@ onBlur={(e) =>
 
       </li>
     </ul>
-    {showSensitivityError && (
-  <div
-    style={{
-      border: "2px solid #2f855a",
-      background: "#f0fff4",
-      padding: "14px",
-      margin: "14px 0",
-      borderRadius: "8px",
-      fontSize: "18px",
-      fontWeight: 700,
-      color: "#2f855a",
-      textAlign: "center"
-    }}
-<button
-  onClick={() => {
-    if (!sensitivity) {
-      setShowSensitivityError(true);
-      return;
-    }
-
-    setShowSensitivityError(false);
-    setStep(5);
-  }}
->
-  Продовжити
-</button>
-
-  >
-    Будь ласка, оберіть варіант, що описує вашу шкіру
-  </div>
-)}
+    
 
   </>
 )}{step === 5 && (
