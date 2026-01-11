@@ -17,10 +17,10 @@ const optionStyle = (isActive, width = "100%") => ({
   backgroundColor: isActive ? "#2f855a" : "#f4f4f4",
   color: isActive ? "#ffffff" : "#111827",
 
-  border: "1px solid #cfcfcf",
+  border: isActive ? "2px solid #2f855a" : "1px solid #d1d5db",
 
   padding: "14px 16px",
-  margin: "8px 0",
+  margin: "10px 0",
 
   display: "block",
   width: width,
@@ -32,13 +32,11 @@ const optionStyle = (isActive, width = "100%") => ({
   fontWeight: 500,
   lineHeight: "1.4",
 
-  borderRadius: 0,
+  borderRadius: "10px",
   boxSizing: "border-box",
 
-  // 🔥 ВАЖНО: убираем системный стиль кнопки
-  backgroundImage: "none",
+  transition: "all 0.2s ease",
 });
-
 
   return (
 
