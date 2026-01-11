@@ -57,29 +57,40 @@ const optionStyle = (isActive, width = "100%") => ({
         "Важко сказати",
       ].map((type) => (
         <li key={type}>
-  <button
-  onClick={() => {
-    if (!skinType) return;
-    setStep(2);
-  }}
-  style={{
-    marginTop: 20,
-    width: "100%",
-    padding: "16px",
-    backgroundColor: "#2f855a",
-    color: "#ffffff",
-    fontSize: "17px",
-    fontWeight: 600,
-    border: "none",
-    borderRadius: "12px",
-    cursor: "pointer",
-  }}
->
-  Продовжити
-</button>
+          <button
+            type="button"
+            style={optionStyle(skinType === type)}
+            onClick={() => setSkinType(type)}
+          >
+            {type}
+          </button>
+        </li>
+      ))}
+    </ul>
 
+    <button
+      onClick={() => {
+        if (!skinType) return;
+        setStep(2);
+      }}
+      style={{
+        marginTop: 24,
+        width: "100%",
+        padding: "16px",
+        backgroundColor: "#2f855a",
+        color: "#ffffff",
+        fontSize: "17px",
+        fontWeight: 600,
+        border: "none",
+        borderRadius: "12px",
+        cursor: "pointer",
+      }}
+    >
+      Продовжити
+    </button>
   </>
 )}
+
 
 {step === 2 && (
   <>
