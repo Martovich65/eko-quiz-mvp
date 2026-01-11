@@ -52,23 +52,22 @@ const optionStyle = (isActive, width = "100%") => ({
 
     <ul style={{ listStyle: "none", padding: 0 }}>
       {[
-  "Суха",
-  "Нормальна",
-  "Комбінована",
-  "Жирна",
-  "Важко сказати"
-].map((type) => (
-  <li key={type}>
-    <button
-      type="button"
-      style={optionStyle(skinType === type)}
-      onClick={() => setSkinType(type)}
-    >
-      {type}
-    </button>
-  </li>
-))}
-
+        "Суха",
+        "Нормальна",
+        "Комбінована",
+        "Жирна",
+        "Важко сказати",
+      ].map((type) => (
+        <li key={type}>
+          <button
+            type="button"
+            style={optionStyle(skinType === type)}
+            onClick={() => setSkinType(type)}
+          >
+            {type}
+          </button>
+        </li>
+      ))}
     </ul>
 
     <button
@@ -81,7 +80,6 @@ const optionStyle = (isActive, width = "100%") => ({
     </button>
   </>
 )}
-
 
 {step === 2 && (
   <>
