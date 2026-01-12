@@ -312,14 +312,15 @@ const [emailError, setEmailError] = useState("");
   </>
 )}
 
- {step === 7 && (
+{step === 7 && (
   <>
     <h2>Ваші персональні рекомендації готові</h2>
 
     <p>
-      Заповніть контактні дані — ми підберемо для вас
-      <strong> оптимальні набори догляду</strong> та,
-      за потреби, звʼяжемося для консультації.
+      Заповніть контактні дані — після цього ви побачите
+      <strong> персональні набори догляду</strong>.
+      <br />
+      Якщо бажаєте онлайн-консультацію — напишіть про це в коментарі.
     </p>
 
     <div
@@ -331,12 +332,12 @@ const [emailError, setEmailError] = useState("");
         background: "#ffffff",
       }}
     >
-      {/* ТЕЛЕФОН */}
+      {/* ІМʼЯ */}
       <input
-        type="tel"
-        placeholder="Телефон (Україна)"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        type="text"
+        placeholder="Імʼя"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         style={{
           width: "100%",
           padding: "14px",
@@ -347,21 +348,55 @@ const [emailError, setEmailError] = useState("");
         }}
       />
 
-      {/* EMAIL */}
+      {/* ТЕЛЕФОН */}
       <input
-        type="email"
-        placeholder="E-mail"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        type="tel"
+        placeholder="Телефон (Україна)"
+        value={phone}
+        onChange={(e) => {
+          setPhone(e.target.value);
+          setPhoneError("");
+        }}
         style={{
           width: "100%",
           padding: "14px",
-          marginBottom: 12,
+          marginBottom: 6,
           borderRadius: "8px",
           border: "1px solid #cfcfcf",
           fontSize: "15px",
         }}
       />
+
+      {phoneError && (
+        <div style={{ color: "#2f855a", fontSize: 14, marginBottom: 10 }}>
+          {phoneError}
+        </div>
+      )}
+
+      {/* EMAIL */}
+      <input
+        type="email"
+        placeholder="E-mail"
+        value={email}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          setEmailError("");
+        }}
+        style={{
+          width: "100%",
+          padding: "14px",
+          marginBottom: 6,
+          borderRadius: "8px",
+          border: "1px solid #cfcfcf",
+          fontSize: "15px",
+        }}
+      />
+
+      {emailError && (
+        <div style={{ color: "#2f855a", fontSize: 14, marginBottom: 10 }}>
+          {emailError}
+        </div>
+      )}
 
       {/* КОМЕНТАР */}
       <textarea
@@ -373,48 +408,34 @@ const [emailError, setEmailError] = useState("");
           borderRadius: "8px",
           border: "1px solid #cfcfcf",
           fontSize: "15px",
+          marginTop: 6,
         }}
       />
-
-      {/* ПОМИЛКА */}
-      {contactError && (
-        <div
-          style={{
-            marginTop: 12,
-            padding: "12px",
-            background: "#f0fff4",
-            border: "1px solid #2f855a",
-            borderRadius: "8px",
-            color: "#2f855a",
-            fontWeight: 600,
-            textAlign: "center",
-          }}
-        >
-          {contactError}
-        </div>
-      )}
     </div>
 
-    {/* КНОПКА ПЕРЕХОДУ */}
+    {/* КНОПКА */}
     <button
       type="button"
       onClick={() => {
-        const phoneClean = phone.replace(/\s+/g, "");
+        let hasError = false;
 
-        const phoneRegex = /^(\\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\\d{7}$/;
+        const phoneClean = phone.replace(/\s+/g, "");
+        const phoneRegex =
+          /^(\\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\\d{7}$/;
         const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
 
         if (!phoneRegex.test(phoneClean)) {
-          setContactError("Введіть коректний номер телефону України");
-          return;
+          setPhoneError("Введіть коректний номер телефону України");
+          hasError = true;
         }
 
         if (!emailRegex.test(email)) {
-          setContactError("Введіть коректний e-mail");
-          return;
+          setEmailError("Введіть коректний e-mail");
+          hasError = true;
         }
 
-        setContactError("");
+        if (hasError) return;
+
         setStep(8);
       }}
       style={{
