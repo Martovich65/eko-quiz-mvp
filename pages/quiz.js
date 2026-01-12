@@ -298,15 +298,29 @@ onBlur={(e) =>
     </ul>
 
     <button
+      type="button"
       onClick={() => {
         if (!sensitivity) return;
         setStep(5);
+      }}
+      style={{
+        marginTop: 20,
+        width: "100%",
+        padding: "16px",
+        backgroundColor: "#2f855a",
+        color: "#ffffff",
+        fontSize: "17px",
+        fontWeight: 600,
+        border: "none",
+        borderRadius: "12px",
+        cursor: "pointer",
       }}
     >
       Продовжити
     </button>
   </>
 )}
+
 
 {step === 5 && (
   <>
