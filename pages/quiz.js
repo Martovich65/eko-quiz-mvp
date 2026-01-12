@@ -306,6 +306,123 @@ export default function Quiz() {
   </>
 )}
 
+  {step === 7 && (
+  <>
+    <h2>Персональні рекомендації вже готові</h2>
+
+    <p>
+      Залиште, будь ласка, свої контактні дані — ми підготуємо для вас
+      <strong> індивідуальні набори догляду</strong> та надішлемо рекомендації.
+    </p>
+
+    <div
+      style={{
+        marginTop: 20,
+        padding: "20px",
+        border: "1px solid #cfcfcf",
+        borderRadius: "12px",
+        background: "#ffffff",
+      }}
+    >
+      {/* ІМʼЯ */}
+      <input
+        type="text"
+        placeholder="Ваше імʼя"
+        style={{
+          width: "100%",
+          padding: "14px",
+          marginBottom: 12,
+          borderRadius: "8px",
+          border: "1px solid #cfcfcf",
+          fontSize: "15px",
+        }}
+      />
+
+      {/* ТЕЛЕФОН */}
+      <input
+        type="tel"
+        placeholder="Телефон"
+        style={{
+          width: "100%",
+          padding: "14px",
+          marginBottom: 12,
+          borderRadius: "8px",
+          border: "1px solid #cfcfcf",
+          fontSize: "15px",
+        }}
+      />
+
+      {/* EMAIL */}
+      <input
+        type="email"
+        placeholder="E-mail"
+        style={{
+          width: "100%",
+          padding: "14px",
+          marginBottom: 12,
+          borderRadius: "8px",
+          border: "1px solid #cfcfcf",
+          fontSize: "15px",
+        }}
+      />
+
+      {/* КОМЕНТАР */}
+      <textarea
+        placeholder="Коментар (якщо бажаєте консультацію — напишіть тут)"
+        rows={4}
+        style={{
+          width: "100%",
+          padding: "14px",
+          borderRadius: "8px",
+          border: "1px solid #cfcfcf",
+          fontSize: "15px",
+        }}
+      />
+    </div>
+
+    {/* КНОПКА — ПЕРЕЙТИ К НАБОРАМ */}
+    <button
+      type="button"
+      onClick={() => setStep(8)}
+      style={{
+        marginTop: 24,
+        width: "100%",
+        padding: "16px",
+        backgroundColor: "#2f855a",
+        color: "#ffffff",
+        fontSize: "17px",
+        fontWeight: 600,
+        border: "none",
+        borderRadius: "12px",
+        cursor: "pointer",
+      }}
+    >
+      Переглянути персональні набори
+    </button>
+
+    {/* КНОПКА МАГАЗИНА — ВТОРИЧНА */}
+    <button
+      type="button"
+      onClick={() => window.location.href = "/shop"}
+      style={{
+        marginTop: 12,
+        width: "100%",
+        padding: "14px",
+        backgroundColor: "#f4f4f4",
+        color: "#1f2937",
+        fontSize: "15px",
+        fontWeight: 500,
+        border: "1px solid #cfcfcf",
+        borderRadius: "12px",
+        cursor: "pointer",
+      }}
+    >
+      Подивитись магазин
+    </button>
+  </>
+)}
+
+
     </main>
   );
 }
