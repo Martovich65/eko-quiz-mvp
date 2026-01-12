@@ -252,18 +252,67 @@ export default function Quiz() {
         </>
       )}
 
-      {/* ===== STEP 6 ===== */}
-      {step === 6 && (
-        <>
-          <h2>Результат діагностики</h2>
-          <button
-            style={primaryButtonStyle(false)}
-            onClick={() => setStep(7)}
-          >
-            Отримати персональні рекомендації
-          </button>
-        </>
-      )}
+    {step === 6 && (
+  <>
+    <h2>Результат діагностики</h2>
+
+    <p>
+      Дякуємо! На основі ваших відповідей ми проаналізували стан вашої шкіри
+      та підготували персональні рекомендації.
+    </p>
+
+    <div
+      style={{
+        marginTop: 20,
+        padding: "20px",
+        background: "#f0fff4",
+        border: "1px solid #2f855a",
+        borderRadius: "12px",
+        color: "#1f2937",
+        lineHeight: 1.6,
+      }}
+    >
+      <p><strong>Тип шкіри:</strong> {skinType}</p>
+
+      <p>
+        <strong>Основні проблеми:</strong>{" "}
+        {problems.length > 0 ? problems.join(", ") : "—"}
+      </p>
+
+      <p><strong>Вік:</strong> {ageRange}</p>
+
+      <p><strong>Чутливість:</strong> {sensitivity}</p>
+
+      <p>
+        <strong>Формат догляду:</strong>{" "}
+        {offerType === "min" && "Мінімальне рішення"}
+        {offerType === "optimal" && "Оптимальний набір"}
+        {offerType === "max" && "Розширений догляд"}
+      </p>
+    </div>
+
+    {/* ЕДИНСТВЕННАЯ КНОПКА */}
+    <button
+      type="button"
+      onClick={() => setStep(7)}
+      style={{
+        marginTop: 28,
+        width: "100%",
+        padding: "16px",
+        backgroundColor: "#2f855a",
+        color: "#ffffff",
+        fontSize: "17px",
+        fontWeight: 600,
+        border: "none",
+        borderRadius: "12px",
+        cursor: "pointer",
+      }}
+    >
+      Отримати персональні рекомендації
+    </button>
+  </>
+)}
+
 
       {/* ===== STEP 7 ===== */}
       {step === 7 && (
