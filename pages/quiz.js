@@ -369,6 +369,164 @@ export default function Quiz() {
           </button>
         </>
       )}
+
+        {step === 8 && (
+  <>
+    <h2>Ваші персональні набори догляду</h2>
+
+    <p>
+      На основі діагностики ми підібрали оптимальні варіанти догляду саме для вас.
+      Оберіть формат, який підходить найбільше 💚
+    </p>
+
+    <div style={{ marginTop: 24, display: "grid", gap: 20 }}>
+      
+      {/* ===== МІНІМАЛЬНИЙ НАБІР ===== */}
+      <div
+        style={{
+          padding: 20,
+          border: offerType === "min" ? "2px solid #2f855a" : "1px solid #cfcfcf",
+          borderRadius: 12,
+          background: "#ffffff",
+        }}
+      >
+        <h3>Мінімальний набір</h3>
+        <p>
+          Базовий догляд для підтримки шкіри та роботи з основними проблемами.
+        </p>
+        <ul>
+          <li>Очищення</li>
+          <li>Зволоження</li>
+          <li>Захист шкіри</li>
+        </ul>
+
+        <button
+          style={{
+            marginTop: 12,
+            width: "100%",
+            padding: "14px",
+            backgroundColor: "#2f855a",
+            color: "#ffffff",
+            border: "none",
+            borderRadius: 10,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+          onClick={() => window.open("/shop/min", "_blank")}
+        >
+          Переглянути набір
+        </button>
+      </div>
+
+      {/* ===== ОПТИМАЛЬНИЙ НАБІР ===== */}
+      <div
+        style={{
+          padding: 20,
+          border: offerType === "optimal"
+            ? "3px solid #2f855a"
+            : "1px solid #cfcfcf",
+          borderRadius: 12,
+          background: "#f0fff4",
+        }}
+      >
+        <h3>Оптимальний набір ⭐</h3>
+        <p>
+          Рекомендований варіант для комплексного догляду та видимого результату.
+        </p>
+        <ul>
+          <li>Очищення</li>
+          <li>Активні сироватки</li>
+          <li>Креми за типом шкіри</li>
+          <li>SPF-захист</li>
+        </ul>
+
+        <button
+          style={{
+            marginTop: 12,
+            width: "100%",
+            padding: "14px",
+            backgroundColor: "#2f855a",
+            color: "#ffffff",
+            border: "none",
+            borderRadius: 10,
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+          onClick={() => window.open("/shop/optimal", "_blank")}
+        >
+          Переглянути набір
+        </button>
+      </div>
+
+      {/* ===== РОЗШИРЕНИЙ НАБІР ===== */}
+      <div
+        style={{
+          padding: 20,
+          border: offerType === "max" ? "2px solid #2f855a" : "1px solid #cfcfcf",
+          borderRadius: 12,
+          background: "#ffffff",
+        }}
+      >
+        <h3>Розширений догляд</h3>
+        <p>
+          Максимальний ефект, anti-age та глибока робота з проблемами шкіри.
+        </p>
+        <ul>
+          <li>Повний базовий догляд</li>
+          <li>Активні комплекси</li>
+          <li>Догляд за зоною очей</li>
+          <li>Інтенсивні маски</li>
+        </ul>
+
+        <button
+          style={{
+            marginTop: 12,
+            width: "100%",
+            padding: "14px",
+            backgroundColor: "#2f855a",
+            color: "#ffffff",
+            border: "none",
+            borderRadius: 10,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+          onClick={() => window.open("/shop/max", "_blank")}
+        >
+          Переглянути набір
+        </button>
+      </div>
+    </div>
+
+    {/* ===== CTA ===== */}
+    <div style={{ marginTop: 32 }}>
+      <button
+        style={{
+          width: "100%",
+          padding: "16px",
+          backgroundColor: "#1f2937",
+          color: "#ffffff",
+          border: "none",
+          borderRadius: 12,
+          fontSize: 16,
+          fontWeight: 600,
+          cursor: "pointer",
+        }}
+        onClick={() => window.open("/shop", "_blank")}
+      >
+        Подивитись магазин
+      </button>
+    </div>
+
+    <div style={{ marginTop: 20, textAlign: "center" }}>
+      <p>
+        Хочете онлайн-консультацію?
+        <br />
+        Напишіть про це в коментарі — ми з вами зв’яжемося 💬
+      </p>
+    </div>
+  </>
+)}
+
     </main>
   );
 }
