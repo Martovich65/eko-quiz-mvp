@@ -309,13 +309,14 @@ const [contactError, setContactError] = useState("");
   </>
 )}
 
-  {step === 7 && (
+ {step === 7 && (
   <>
-    <h2>Персональні рекомендації вже готові</h2>
+    <h2>Ваші персональні рекомендації готові</h2>
 
     <p>
-      Залиште, будь ласка, свої контактні дані — ми підготуємо для вас
-      <strong> індивідуальні набори догляду</strong> та надішлемо рекомендації.
+      Заповніть контактні дані — ми підберемо для вас
+      <strong> оптимальні набори догляду</strong> та,
+      за потреби, звʼяжемося для консультації.
     </p>
 
     <div
@@ -327,24 +328,12 @@ const [contactError, setContactError] = useState("");
         background: "#ffffff",
       }}
     >
-      {/* ІМʼЯ */}
-      <input
-        type="text"
-        placeholder="Ваше імʼя"
-        style={{
-          width: "100%",
-          padding: "14px",
-          marginBottom: 12,
-          borderRadius: "8px",
-          border: "1px solid #cfcfcf",
-          fontSize: "15px",
-        }}
-      />
-
       {/* ТЕЛЕФОН */}
       <input
         type="tel"
-        placeholder="Телефон"
+        placeholder="Телефон (Україна)"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
         style={{
           width: "100%",
           padding: "14px",
@@ -359,6 +348,8 @@ const [contactError, setContactError] = useState("");
       <input
         type="email"
         placeholder="E-mail"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         style={{
           width: "100%",
           padding: "14px",
@@ -381,12 +372,48 @@ const [contactError, setContactError] = useState("");
           fontSize: "15px",
         }}
       />
+
+      {/* ПОМИЛКА */}
+      {contactError && (
+        <div
+          style={{
+            marginTop: 12,
+            padding: "12px",
+            background: "#f0fff4",
+            border: "1px solid #2f855a",
+            borderRadius: "8px",
+            color: "#2f855a",
+            fontWeight: 600,
+            textAlign: "center",
+          }}
+        >
+          {contactError}
+        </div>
+      )}
     </div>
 
-    {/* КНОПКА — ПЕРЕЙТИ К НАБОРАМ */}
+    {/* КНОПКА ПЕРЕХОДУ */}
     <button
       type="button"
-      onClick={() => setStep(8)}
+      onClick={() => {
+        const phoneClean = phone.replace(/\s+/g, "");
+
+        const phoneRegex = /^(\\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\\d{7}$/;
+        const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+
+        if (!phoneRegex.test(phoneClean)) {
+          setContactError("Введіть коректний номер телефону України");
+          return;
+        }
+
+        if (!emailRegex.test(email)) {
+          setContactError("Введіть коректний e-mail");
+          return;
+        }
+
+        setContactError("");
+        setStep(8);
+      }}
       style={{
         marginTop: 24,
         width: "100%",
@@ -400,31 +427,10 @@ const [contactError, setContactError] = useState("");
         cursor: "pointer",
       }}
     >
-      Переглянути персональні набори
-    </button>
-
-    {/* КНОПКА МАГАЗИНА — ВТОРИЧНА */}
-    <button
-      type="button"
-      onClick={() => window.location.href = "/shop"}
-      style={{
-        marginTop: 12,
-        width: "100%",
-        padding: "14px",
-        backgroundColor: "#f4f4f4",
-        color: "#1f2937",
-        fontSize: "15px",
-        fontWeight: 500,
-        border: "1px solid #cfcfcf",
-        borderRadius: "12px",
-        cursor: "pointer",
-      }}
-    >
-      Подивитись магазин
+      Отримати ваші персональні рекомендації
     </button>
   </>
 )}
-
 
     </main>
   );
