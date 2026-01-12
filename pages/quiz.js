@@ -196,9 +196,15 @@ onBlur={(e) =>
 )}
 
 <button
+  type="button"
   onClick={() => {
-    if (!skinType) return;
-    setStep(2);
+    if (problems.length === 0) {
+      setShowProblemError(true);
+      return;
+    }
+
+    setShowProblemError(false);
+    setStep(3);
   }}
   style={{
     marginTop: 20,
@@ -215,6 +221,7 @@ onBlur={(e) =>
 >
   Продовжити
 </button>
+
 
 
   </>
