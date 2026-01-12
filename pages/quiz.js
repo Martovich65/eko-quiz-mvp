@@ -222,8 +222,6 @@ onBlur={(e) =>
   Продовжити
 </button>
 
-
-
   </>
 )}
 {step === 3 && (
@@ -251,16 +249,26 @@ onBlur={(e) =>
       ))}
     </ul>
 
-    <button
-      onClick={() => {
-        if (!ageRange) return;
-        setStep(4);
-      }}
-    >
-      Продовжити
-    </button>
-  </>
-)}
+   <button
+  onClick={() => {
+    if (!ageRange) return;
+    setStep(4);
+  }}
+  style={{
+    marginTop: 20,
+    width: "100%",
+    padding: "16px",
+    backgroundColor: "#2f855a",
+    color: "#ffffff",
+    fontSize: "17px",
+    fontWeight: 600,
+    border: "none",
+    borderRadius: "12px",
+    cursor: "pointer",
+  }}
+>
+  Продовжити
+</button>
 
 {step === 4 && (
   <>
