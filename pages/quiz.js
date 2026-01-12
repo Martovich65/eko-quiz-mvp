@@ -377,6 +377,67 @@ onBlur={(e) =>
   </>
 )}
 
+  {step === 6 && (
+  <>
+    <h2>Результат діагностики</h2>
+
+    <p style={{ marginBottom: 16 }}>
+      Дякуємо! На основі ваших відповідей ми підготували рекомендацію.
+    </p>
+
+    <div
+      style={{
+        background: "#f0fff4",
+        border: "1px solid #2f855a",
+        borderRadius: "12px",
+        padding: "16px",
+        marginBottom: "20px",
+        lineHeight: 1.5,
+        fontSize: "15px",
+      }}
+    >
+      <p><strong>Тип шкіри:</strong> {skinType}</p>
+
+      <p>
+        <strong>Проблеми:</strong>{" "}
+        {problems.length > 0 ? problems.join(", ") : "не вказані"}
+      </p>
+
+      <p><strong>Вік:</strong> {ageRange}</p>
+
+      <p><strong>Чутливість:</strong> {sensitivity}</p>
+
+      <p>
+        <strong>Обраний догляд:</strong>{" "}
+        {offerType === "min" && "Мінімальне рішення"}
+        {offerType === "optimal" && "Оптимальний набір"}
+        {offerType === "max" && "Розширений догляд"}
+      </p>
+    </div>
+
+    <button
+      type="button"
+      onClick={() => {
+        // здесь позже можно добавить переход на лендинг / форму / оплату
+        alert("Дякуємо! Наступний крок — підбір продуктів ✨");
+      }}
+      style={{
+        width: "100%",
+        padding: "16px",
+        backgroundColor: "#2f855a",
+        color: "#ffffff",
+        fontSize: "17px",
+        fontWeight: 600,
+        border: "none",
+        borderRadius: "12px",
+        cursor: "pointer",
+      }}
+    >
+      Отримати рекомендації
+    </button>
+  </>
+)}
+
     </main>
   );
 }
