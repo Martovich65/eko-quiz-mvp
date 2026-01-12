@@ -358,11 +358,10 @@ const [emailError, setEmailError] = useState("");
           const value = e.target.value;
           setPhone(value);
 
-          const clean = value.replace(/\s+/g, "");
           const phoneRegex =
             /^(\\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\\d{7}$/;
 
-          if (phoneRegex.test(clean)) {
+          if (phoneRegex.test(value)) {
             setPhoneError("");
           }
         }}
@@ -422,7 +421,6 @@ const [emailError, setEmailError] = useState("");
           borderRadius: "8px",
           border: "1px solid #cfcfcf",
           fontSize: "15px",
-          marginTop: 6,
         }}
       />
     </div>
@@ -433,19 +431,22 @@ const [emailError, setEmailError] = useState("");
       onClick={() => {
         let hasError = false;
 
-        const phoneClean = phone.replace(/\s+/g, "");
         const phoneRegex =
           /^(\\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\\d{7}$/;
         const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
 
-        if (!phoneRegex.test(phoneClean)) {
+        if (!phoneRegex.test(phone)) {
           setPhoneError("Введіть коректний номер телефону України");
           hasError = true;
+        } else {
+          setPhoneError("");
         }
 
         if (!emailRegex.test(email)) {
           setEmailError("Введіть коректний e-mail");
           hasError = true;
+        } else {
+          setEmailError("");
         }
 
         if (hasError) return;
@@ -469,6 +470,7 @@ const [emailError, setEmailError] = useState("");
     </button>
   </>
 )}
+
 
 
     </main>
