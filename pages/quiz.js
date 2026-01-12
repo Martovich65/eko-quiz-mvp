@@ -97,133 +97,115 @@ const optionStyle = (isActive, width = "100%") => ({
     <h2>Питання 2 з 6</h2>
     <p><strong>Які проблеми шкіри вас турбують зараз?</strong></p>
 
-<p>
-  <span style={{ color: "#2f855a" }}>
-    Найчастіше проблем буває декілька — оберіть усі, що актуальні для вас.
-  </span>
-</p>
+    <p>
+      <span style={{ color: "#2f855a" }}>
+        Найчастіше проблем буває декілька — оберіть усі, що актуальні для вас.
+      </span>
+    </p>
 
     <p>
       <strong>Обраний тип шкіри:</strong> {skinType}
     </p>
 
     <ul style={{ listStyle: "none", padding: 0 }}>
-  {[
-    "Сухість / стягнутість",
-    "Зморшки",
-    "Пігментація",
-    "Постакне",
-    "Чорні цятки / пори",
-    "Акне / прищі",
-    "Темні кола та мішки під очима",
-    "Гусячі лапки (зона очей)",
-    "Міліуми (білі точки під шкірою)",
-    "Розацеа",
-    "Втрата пружності шкіри в зоні шиї"
-  ].map((problem) => (
-    <li key={problem} style={{ marginBottom: 8 }}>
-      <button
-        onClick={() => {
-          setProblems((prev) =>
-            prev.includes(problem)
-              ? prev.filter((p) => p !== problem)
-              : [...prev, problem]
-          );
-    setShowProblemError(false);
+      {[
+        "Сухість / стягнутість",
+        "Зморшки",
+        "Пігментація",
+        "Постакне",
+        "Чорні цятки / пори",
+        "Акне / прищі",
+        "Темні кола та мішки під очима",
+        "Гусячі лапки (зона очей)",
+        "Міліуми (білі точки під шкірою)",
+        "Розацеа",
+        "Втрата пружності шкіри в зоні шиї",
+      ].map((problem) => {
+        const isActive = problems.includes(problem);
+
+        return (
+          <li key={problem}>
+            <button
+              type="button"
+              style={optionStyle(isActive)}
+              onClick={() => {
+                setProblems((prev) =>
+                  prev.includes(problem)
+                    ? prev.filter((p) => p !== problem)
+                    : [...prev, problem]
+                );
+                setShowProblemError(false);
+              }}
+            >
+              {problem}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+
+    {problems.length > 0 && (
+      <div
+        style={{
+          marginTop: 16,
+          padding: "12px 14px",
+          background: "#f0fff4",
+          border: "1px solid #2f855a",
+          borderRadius: 8,
+          color: "#2f855a",
+          fontSize: 15,
+          lineHeight: 1.4,
         }}
-style={{
-  background: problems.includes(problem) ? "#2f855a" : "#f4f4f4",
-  color: problems.includes(problem) ? "#ffffff" : "#111827",
-  border: "1px solid #cfcfcf",
-  padding: "10px 12px",
-  margin: "6px 0",
-  display: "block",
-  width: "100%",
-  textAlign: "left",
-  cursor: "pointer",
-  fontSize: "15px",
-  lineHeight: "1.4",
-  borderRadius: 0,
-  outline: "none",
-}}
-onFocus={(e) =>
-  (e.currentTarget.style.boxShadow =
-    "0 0 0 3px rgba(47,133,90,0.12)")
-}
-onBlur={(e) =>
-  (e.currentTarget.style.boxShadow = "none")
-}
-
       >
-        {problem}
-      </button>
-    </li>
-  ))}
-</ul>
-{problems.length > 0 && (
-  <div
-    style={{
-      marginTop: 16,
-      padding: "12px 14px",
-      background: "#f0fff4",
-      border: "1px solid #2f855a",
-      borderRadius: 6,
-      color: "#2f855a",
-      fontSize: 15,
-      lineHeight: 1.4
-    }}
-  >
-    <strong>Ви обрали:</strong> {problems.join(", ")}
-  </div>
-)}
+        <strong>Ви обрали:</strong> {problems.join(", ")}
+      </div>
+    )}
 
-{showProblemError && (
-  <div
-    style={{
-      border: "2px solid #2f855a",
-      background: "#f0fff4",
-      padding: "14px",
-      margin: "14px 0",
-      borderRadius: "8px",
-      fontSize: "20px",
-      fontWeight: 700,
-      color: "#2f855a",
-      textAlign: "center"
-    }}
-  >
-    Будь ласка, оберіть хоча б одну проблему яка зараз актуальна для Вас!
-  </div>
-)}
+    {showProblemError && (
+      <div
+        style={{
+          border: "2px solid #2f855a",
+          background: "#f0fff4",
+          padding: "14px",
+          margin: "14px 0",
+          borderRadius: "8px",
+          fontSize: "18px",
+          fontWeight: 700,
+          color: "#2f855a",
+          textAlign: "center",
+        }}
+      >
+        Будь ласка, оберіть хоча б одну проблему, яка зараз актуальна для вас
+      </div>
+    )}
 
-<button
-  type="button"
-  onClick={() => {
-    if (problems.length === 0) {
-      setShowProblemError(true);
-      return;
-    }
-
-    setShowProblemError(false);
-    setStep(3);
-  }}
-  style={{
-    marginTop: 20,
-    width: "100%",
-    padding: "16px",
-    backgroundColor: "#2f855a",
-    color: "#ffffff",
-    fontSize: "17px",
-    fontWeight: 600,
-    border: "none",
-    borderRadius: "12px",
-    cursor: "pointer",
-  }}
->
-  Продовжити
-</button>
-
+    <button
+      type="button"
+      onClick={() => {
+        if (problems.length === 0) {
+          setShowProblemError(true);
+          return;
+        }
+        setStep(3);
+      }}
+      style={{
+        marginTop: 24,
+        width: "100%",
+        padding: "16px",
+        backgroundColor: "#2f855a",
+        color: "#ffffff",
+        fontSize: "17px",
+        fontWeight: 600,
+        border: "none",
+        borderRadius: "12px",
+        cursor: "pointer",
+      }}
+    >
+      Продовжити
+    </button>
   </>
 )}
+
 {step === 3 && (
   <>
     <h2>Питання 3 з 6</h2>
