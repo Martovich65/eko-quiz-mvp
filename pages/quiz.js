@@ -321,10 +321,9 @@ onBlur={(e) =>
   </>
 )}
 
-
 {step === 5 && (
   <>
-    <h2>Питання 6 з 6</h2>
+    <h2>Питання 5 з 6</h2>
     <p>Який варіант догляду вам більше підходить?</p>
 
     <ul style={{ listStyle: "none", padding: 0 }}>
@@ -355,16 +354,29 @@ onBlur={(e) =>
     </ul>
 
     <button
+      type="button"
       onClick={() => {
         if (!offerType) return;
         setStep(6);
+      }}
+      style={{
+        marginTop: 20,
+        width: "100%",
+        padding: "16px",
+        backgroundColor: "#2f855a",
+        color: "#ffffff",
+        fontSize: "17px",
+        fontWeight: 600,
+        border: "none",
+        borderRadius: "12px",
+        cursor: "pointer",
       }}
     >
       Продовжити
     </button>
   </>
 )}
- 
+
     </main>
   );
 }
