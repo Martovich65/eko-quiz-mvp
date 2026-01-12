@@ -8,6 +8,9 @@ export default function Quiz() {
   const [ageRange, setAgeRange] = useState(null);
   const [sensitivity, setSensitivity] = useState(null);
   const [offerType, setOfferType] = useState(null);
+const [phone, setPhone] = useState("");
+const [email, setEmail] = useState("");
+const [contactError, setContactError] = useState("");
 
   const [showProblemError, setShowProblemError] = useState(false);
 
