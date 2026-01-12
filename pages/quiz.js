@@ -354,8 +354,16 @@ const [emailError, setEmailError] = useState("");
         placeholder="Телефон (Україна)"
         value={phone}
         onChange={(e) => {
-          setPhone(e.target.value);
-          setPhoneError("");
+          const value = e.target.value;
+          setPhone(value);
+
+          const clean = value.replace(/\s+/g, "");
+          const phoneRegex =
+            /^(\\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\\d{7}$/;
+
+          if (phoneRegex.test(clean)) {
+            setPhoneError("");
+          }
         }}
         style={{
           width: "100%",
@@ -379,8 +387,13 @@ const [emailError, setEmailError] = useState("");
         placeholder="E-mail"
         value={email}
         onChange={(e) => {
-          setEmail(e.target.value);
-          setEmailError("");
+          const value = e.target.value;
+          setEmail(value);
+
+          const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+          if (emailRegex.test(value)) {
+            setEmailError("");
+          }
         }}
         style={{
           width: "100%",
@@ -455,6 +468,7 @@ const [emailError, setEmailError] = useState("");
     </button>
   </>
 )}
+
 
     </main>
   );
