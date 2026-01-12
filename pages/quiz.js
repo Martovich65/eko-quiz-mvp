@@ -8,17 +8,16 @@ export default function Quiz() {
   const [ageRange, setAgeRange] = useState(null);
   const [sensitivity, setSensitivity] = useState(null);
   const [offerType, setOfferType] = useState(null);
-const [name, setName] = useState("");
-const [phone, setPhone] = useState("");
-const [email, setEmail] = useState("");
 
-const [phoneError, setPhoneError] = useState("");
-const [emailError, setEmailError] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
 
-
+  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [showProblemError, setShowProblemError] = useState(false);
 
-  // ====== СТИЛИ ======
+  /* ===== СТИЛИ ===== */
 
   const optionStyle = (isActive) => ({
     appearance: "none",
@@ -50,13 +49,18 @@ const [emailError, setEmailError] = useState("");
     opacity: disabled ? 0.7 : 1,
   });
 
-  // ====== RENDER ======
+  /* ===== REGEX ===== */
+
+  const phoneRegex =
+    /^(?:\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\d{7}$/;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   return (
     <main style={{ maxWidth: 600, margin: "40px auto", fontFamily: "sans-serif" }}>
       <h1>Онлайн-діагностика шкіри</h1>
 
-      {/* ===== ШАГ 1 ===== */}
+      {/* ===== STEP 1 ===== */}
       {step === 1 && (
         <>
           <h2>Питання 1 з 6</h2>
@@ -88,15 +92,11 @@ const [emailError, setEmailError] = useState("");
         </>
       )}
 
-      {/* ===== ШАГ 2 ===== */}
+      {/* ===== STEP 2 ===== */}
       {step === 2 && (
         <>
           <h2>Питання 2 з 6</h2>
           <p><strong>Які проблеми шкіри вас турбують зараз?</strong></p>
-
-          <p style={{ color: "#2f855a" }}>
-            Найчастіше проблем буває декілька — оберіть усі, що актуальні для вас.
-          </p>
 
           <ul style={{ listStyle: "none", padding: 0 }}>
             {[
@@ -132,8 +132,8 @@ const [emailError, setEmailError] = useState("");
           </ul>
 
           {showProblemError && (
-            <div style={{ color: "#2f855a", fontWeight: 700, marginTop: 12 }}>
-              Будь ласка, оберіть хоча б одну проблему
+            <div style={{ color: "#2f855a", fontWeight: 700 }}>
+              Оберіть хоча б одну проблему
             </div>
           )}
 
@@ -153,7 +153,7 @@ const [emailError, setEmailError] = useState("");
         </>
       )}
 
-      {/* ===== ШАГ 3 ===== */}
+      {/* ===== STEP 3 ===== */}
       {step === 3 && (
         <>
           <h2>Питання 3 з 6</h2>
@@ -183,11 +183,11 @@ const [emailError, setEmailError] = useState("");
         </>
       )}
 
-      {/* ===== ШАГ 4 ===== */}
+      {/* ===== STEP 4 ===== */}
       {step === 4 && (
         <>
           <h2>Питання 4 з 6</h2>
-          <p>Чи є у вас особливості або чутливість шкіри?</p>
+          <p>Чи є у вас чутливість шкіри?</p>
 
           <ul style={{ listStyle: "none", padding: 0 }}>
             {[
@@ -218,17 +218,17 @@ const [emailError, setEmailError] = useState("");
         </>
       )}
 
-      {/* ===== ШАГ 5 ===== */}
+      {/* ===== STEP 5 ===== */}
       {step === 5 && (
         <>
           <h2>Питання 5 з 6</h2>
-          <p>Який варіант догляду вам більше підходить?</p>
+          <p>Формат догляду</p>
 
           <ul style={{ listStyle: "none", padding: 0 }}>
             {[
-              { id: "min", label: "Мінімальне рішення" },
-              { id: "optimal", label: "Оптимальний набір" },
-              { id: "max", label: "Розширений догляд" },
+              { id: "min", label: "Мінімальний" },
+              { id: "optimal", label: "Оптимальний" },
+              { id: "max", label: "Розширений" },
             ].map((opt) => (
               <li key={opt.id}>
                 <button
@@ -252,227 +252,74 @@ const [emailError, setEmailError] = useState("");
         </>
       )}
 
-     {step === 6 && (
-  <>
-    <h2>Результат діагностики</h2>
-
-    <p>
-      Дякуємо! На основі ваших відповідей ми проаналізували стан вашої шкіри
-      та підготували персональні рекомендації.
-    </p>
-
-    <div
-      style={{
-        marginTop: 20,
-        padding: "20px",
-        background: "#f0fff4",
-        border: "1px solid #2f855a",
-        borderRadius: "12px",
-        color: "#1f2937",
-        lineHeight: 1.6,
-      }}
-    >
-      <p><strong>Тип шкіри:</strong> {skinType}</p>
-
-      <p>
-        <strong>Основні проблеми:</strong>{" "}
-        {problems.length > 0 ? problems.join(", ") : "—"}
-      </p>
-
-      <p><strong>Вік:</strong> {ageRange}</p>
-
-      <p><strong>Чутливість:</strong> {sensitivity}</p>
-
-      <p>
-        <strong>Формат догляду:</strong>{" "}
-        {offerType === "min" && "Мінімальне рішення"}
-        {offerType === "optimal" && "Оптимальний набір"}
-        {offerType === "max" && "Розширений догляд"}
-      </p>
-    </div>
-
-    {/* ЕДИНСТВЕННАЯ КНОПКА */}
-    <button
-      type="button"
-      onClick={() => setStep(7)}
-      style={{
-        marginTop: 28,
-        width: "100%",
-        padding: "16px",
-        backgroundColor: "#2f855a",
-        color: "#ffffff",
-        fontSize: "17px",
-        fontWeight: 600,
-        border: "none",
-        borderRadius: "12px",
-        cursor: "pointer",
-      }}
-    >
-      Отримати персональні рекомендації
-    </button>
-  </>
-)}
-
-{step === 7 && (
-  <>
-    <h2>Ваші персональні рекомендації готові</h2>
-
-    <p>
-      Заповніть контактні дані — після цього ви побачите
-      <strong> персональні набори догляду</strong>.
-      <br />
-      Якщо бажаєте онлайн-консультацію — напишіть про це в коментарі.
-    </p>
-
-    <div
-      style={{
-        marginTop: 20,
-        padding: "20px",
-        border: "1px solid #cfcfcf",
-        borderRadius: "12px",
-        background: "#ffffff",
-      }}
-    >
-      {/* ІМʼЯ */}
-      <input
-        type="text"
-        placeholder="Імʼя"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={{
-          width: "100%",
-          padding: "14px",
-          marginBottom: 12,
-          borderRadius: "8px",
-          border: "1px solid #cfcfcf",
-          fontSize: "15px",
-        }}
-      />
-
-      {/* ТЕЛЕФОН */}
-      <input
-        type="tel"
-        placeholder="Телефон (Україна)"
-        value={phone}
-        onChange={(e) => {
-          const value = e.target.value;
-          setPhone(value);
-
-          const phoneRegex =
-            /^(\\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\\d{7}$/;
-
-          if (phoneRegex.test(value)) {
-            setPhoneError("");
-          }
-        }}
-        style={{
-          width: "100%",
-          padding: "14px",
-          marginBottom: 6,
-          borderRadius: "8px",
-          border: "1px solid #cfcfcf",
-          fontSize: "15px",
-        }}
-      />
-
-      {phoneError && (
-        <div style={{ color: "#2f855a", fontSize: 14, marginBottom: 10 }}>
-          {phoneError}
-        </div>
+      {/* ===== STEP 6 ===== */}
+      {step === 6 && (
+        <>
+          <h2>Результат діагностики</h2>
+          <button
+            style={primaryButtonStyle(false)}
+            onClick={() => setStep(7)}
+          >
+            Отримати персональні рекомендації
+          </button>
+        </>
       )}
 
-      {/* EMAIL */}
-      <input
-        type="email"
-        placeholder="E-mail"
-        value={email}
-        onChange={(e) => {
-          const value = e.target.value;
-          setEmail(value);
+      {/* ===== STEP 7 ===== */}
+      {step === 7 && (
+        <>
+          <h2>Контактні дані</h2>
 
-          const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-          if (emailRegex.test(value)) {
-            setEmailError("");
-          }
-        }}
-        style={{
-          width: "100%",
-          padding: "14px",
-          marginBottom: 6,
-          borderRadius: "8px",
-          border: "1px solid #cfcfcf",
-          fontSize: "15px",
-        }}
-      />
+          <input
+            placeholder="Імʼя"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={{ width: "100%", padding: 14, marginBottom: 12 }}
+          />
 
-      {emailError && (
-        <div style={{ color: "#2f855a", fontSize: 14, marginBottom: 10 }}>
-          {emailError}
-        </div>
+          <input
+            placeholder="Телефон"
+            value={phone}
+            onChange={(e) => {
+              const v = e.target.value;
+              setPhone(v);
+              if (phoneRegex.test(v)) setPhoneError("");
+            }}
+            style={{ width: "100%", padding: 14 }}
+          />
+          {phoneError && <div style={{ color: "#2f855a" }}>{phoneError}</div>}
+
+          <input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => {
+              const v = e.target.value;
+              setEmail(v);
+              if (emailRegex.test(v)) setEmailError("");
+            }}
+            style={{ width: "100%", padding: 14 }}
+          />
+          {emailError && <div style={{ color: "#2f855a" }}>{emailError}</div>}
+
+          <button
+            style={primaryButtonStyle(false)}
+            onClick={() => {
+              let err = false;
+              if (!phoneRegex.test(phone)) {
+                setPhoneError("Введіть коректний номер телефону України");
+                err = true;
+              }
+              if (!emailRegex.test(email)) {
+                setEmailError("Введіть коректний e-mail");
+                err = true;
+              }
+              if (!err) setStep(8);
+            }}
+          >
+            Отримати персональні рекомендації
+          </button>
+        </>
       )}
-
-      {/* КОМЕНТАР */}
-      <textarea
-        placeholder="Коментар (якщо бажаєте консультацію — напишіть тут)"
-        rows={4}
-        style={{
-          width: "100%",
-          padding: "14px",
-          borderRadius: "8px",
-          border: "1px solid #cfcfcf",
-          fontSize: "15px",
-        }}
-      />
-    </div>
-
-    {/* КНОПКА */}
-    <button
-      type="button"
-      onClick={() => {
-        let hasError = false;
-
-        const phoneRegex =
-          /^(\\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\\d{7}$/;
-        const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-
-        if (!phoneRegex.test(phone)) {
-          setPhoneError("Введіть коректний номер телефону України");
-          hasError = true;
-        } else {
-          setPhoneError("");
-        }
-
-        if (!emailRegex.test(email)) {
-          setEmailError("Введіть коректний e-mail");
-          hasError = true;
-        } else {
-          setEmailError("");
-        }
-
-        if (hasError) return;
-
-        setStep(8);
-      }}
-      style={{
-        marginTop: 24,
-        width: "100%",
-        padding: "16px",
-        backgroundColor: "#2f855a",
-        color: "#ffffff",
-        fontSize: "17px",
-        fontWeight: 600,
-        border: "none",
-        borderRadius: "12px",
-        cursor: "pointer",
-      }}
-    >
-      Отримати ваші персональні рекомендації
-    </button>
-  </>
-)}
-
-
-
     </main>
   );
 }
