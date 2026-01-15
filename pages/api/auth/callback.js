@@ -11,19 +11,17 @@ export default async function handler(req, res) {
       });
     }
 
-    // 1. Формируем message из query (кроме hmac)
+    // 1. Проверка HMAC
     const message = Object.keys(rest)
       .sort()
       .map((key) => `${key}=${rest[key]}`)
       .join("&");
 
-    // 2. Генерируем HMAC
     const generatedHmac = crypto
       .createHmac("sha256", process.env.SHOPIFY_CLIENT_SECRET)
       .update(message)
       .digest("hex");
 
-    // 3. Безопасная проверка HMAC (БЕЗ ПАДЕНИЙ)
     let hmacValid = false;
 
     if (generatedHmac.length === hmac.length) {
@@ -33,14 +31,39 @@ export default async function handler(req, res) {
       );
     }
 
-    // 4. Ответ (пока без access_token)
+    if (!hmacValid) {
+      return res.status(401).json({
+        ok: false,
+        error: "Invalid HMAC",
+      });
+    }
+
+    // 2. Обмен code → access_token
+    const tokenResponse = await fetch(
+      `https://${shop}/admin/oauth/access_token`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          client_id: process.env.SHOPIFY_CLIENT_ID,
+          client_secret: process.env.SHOPIFY_CLIENT_SECRET,
+          code,
+        }),
+      }
+    );
+
+    const tokenData = await tokenResponse.json();
+
     return res.status(200).json({
       ok: true,
-      step: "2.6.2.1",
+      step: "2.6.3",
       shop,
-      codeExists: Boolean(code),
-      hmacExists: Boolean(hmac),
-      hmacValid,
+      accessTokenReceived: Boolean(tokenData.access_token),
+      scope: tokenData.scope,
+      // ⛔ временно показываем token ТОЛЬКО для проверки
+      accessToken: tokenData.access_token || null,
     });
   } catch (error) {
     console.error("OAuth callback error:", error);
