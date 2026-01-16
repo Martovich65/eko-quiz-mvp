@@ -2,9 +2,9 @@ import crypto from "crypto";
 
 export default async function handler(req, res) {
   try {
-    const { shop, code, hmac } = req.query;
+    const { shop, code, hmac, ...rest } = req.query;
 
-    // 1️⃣ Проверка обязательных параметров
+    // 1. Базовые проверки
     if (!shop || !code || !hmac) {
       return res.status(400).json({
         ok: false,
@@ -12,31 +12,36 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2️⃣ Проверка HMAC (пока диагностическая)
-    const { hmac: _hmac, ...rest } = req.query;
-    const message = new URLSearchParams(rest).toString();
+    // 2. Проверка HMAC
+    const message = Object.keys(rest)
+      .sort()
+      .map((key) => `${key}=${rest[key]}`)
+      .join("&");
 
     const generatedHmac = crypto
       .createHmac("sha256", process.env.SHOPIFY_CLIENT_SECRET)
       .update(message)
       .digest("hex");
 
-    const hmacValid =
-      generatedHmac.length === hmac.length &&
-      crypto.timingSafeEqual(
-        Buffer.from(generatedHmac),
-        Buffer.from(hmac)
-      );
+    const hmacValid = crypto.timingSafeEqual(
+      Buffer.from(generatedHmac, "utf-8"),
+      Buffer.from(hmac, "utf-8")
+    );
 
-    // 3️⃣ 🔥 ПРАВИЛЬНЫЙ ОБМЕН code → access_token (FORM ENCODED)
+    if (!hmacValid) {
+      return res.status(401).json({
+        ok: false,
+        error: "HMAC validation failed",
+      });
+    }
+
+    // 3. Обмен code → access_token
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           client_id: process.env.SHOPIFY_CLIENT_ID,
           client_secret: process.env.SHOPIFY_CLIENT_SECRET,
           code,
@@ -44,29 +49,31 @@ export default async function handler(req, res) {
       }
     );
 
-    const tokenData = await tokenResponse.json();
+    const contentType = tokenResponse.headers.get("content-type");
 
-    if (!tokenData.access_token) {
+    if (!contentType || !contentType.includes("application/json")) {
+      const text = await tokenResponse.text();
       return res.status(500).json({
         ok: false,
-        error: "Failed to get access token",
-        tokenData,
+        error: "Shopify did not return JSON",
+        rawResponsePreview: text.slice(0, 200),
       });
     }
 
-    // 4️⃣ УСПЕШНЫЙ РЕЗУЛЬТАТ
+    const tokenData = await tokenResponse.json();
+
+    // ⚠️ ПОКА НЕ СОХРАНЯЕМ В БД — просто проверяем
     return res.status(200).json({
       ok: true,
       step: "2.6.3",
-      message: "Access token successfully received",
       shop,
-      hmacValid,
-      accessTokenReceived: true,
+      accessTokenReceived: Boolean(tokenData.access_token),
     });
-  } catch (error) {
+  } catch (err) {
     return res.status(500).json({
       ok: false,
-      error: error.message,
+      error: "Internal server error",
+      details: err.message,
     });
   }
 }
