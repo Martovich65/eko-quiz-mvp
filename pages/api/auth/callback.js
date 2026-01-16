@@ -1,24 +1,25 @@
 import crypto from "crypto";
+import { Client } from "pg";
 
 export default async function handler(req, res) {
   try {
-    const { shop, code, hmac } = req.query;
+    const { shop, hmac, code, state } = req.query;
 
-    if (!shop || !code || !hmac) {
+    if (!shop || !hmac || !code) {
       return res.status(400).json({
         ok: false,
         error: "Missing required OAuth parameters",
       });
     }
 
-    // 1. Проверка HMAC
+    // 1️⃣ Проверка HMAC
     const params = { ...req.query };
     delete params.hmac;
     delete params.signature;
 
     const message = Object.keys(params)
       .sort()
-      .map((key) => `${key}=${params[key]}`)
+      .map((key) => `${key}=${Array.isArray(params[key]) ? params[key].join(",") : params[key]}`)
       .join("&");
 
     const generatedHmac = crypto
@@ -38,12 +39,14 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2. Обмен code → access_token
+    // 2️⃣ Обмен code → access_token
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           client_id: process.env.SHOPIFY_CLIENT_ID,
           client_secret: process.env.SHOPIFY_CLIENT_SECRET,
@@ -57,20 +60,50 @@ export default async function handler(req, res) {
     if (!tokenData.access_token) {
       return res.status(500).json({
         ok: false,
-        error: "Access token not received",
-        tokenData,
+        error: "Failed to retrieve access token",
+        details: tokenData,
       });
     }
 
-    // ⚠️ ПОКА НЕ СОХРАНЯЕМ В БАЗУ — ЭТО СЛЕДУЮЩИЙ ШАГ
     const accessToken = tokenData.access_token;
 
-    // 3. Успешная установка — редирект в админку Shopify
-    return res.redirect(
-      `https://${shop}/admin/apps`
+    // 3️⃣ Сохранение access_token в БД (Neon)
+    const client = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    });
+
+    await client.connect();
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS shop_tokens (
+        shop TEXT PRIMARY KEY,
+        access_token TEXT NOT NULL,
+        installed_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    await client.query(
+      `
+      INSERT INTO shop_tokens (shop, access_token)
+      VALUES ($1, $2)
+      ON CONFLICT (shop)
+      DO UPDATE SET access_token = EXCLUDED.access_token;
+      `,
+      [shop, accessToken]
     );
+
+    await client.end();
+
+    // 4️⃣ УСПЕХ
+    return res.status(200).json({
+      ok: true,
+      message: "OAuth completed successfully",
+      shop,
+    });
+
   } catch (error) {
-    console.error("OAuth callback error:", error);
+    console.error("OAuth error:", error);
     return res.status(500).json({
       ok: false,
       error: "Internal server error",
