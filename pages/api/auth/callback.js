@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   try {
     const { shop, code, hmac } = req.query;
 
-    // 1️⃣ Базовая проверка
+    // 1️⃣ Проверка обязательных параметров
     if (!shop || !code || !hmac) {
       return res.status(400).json({
         ok: false,
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2️⃣ HMAC-проверка (DEV-режим, без фатального отказа)
+    // 2️⃣ Проверка HMAC (пока диагностическая)
     const { hmac: _hmac, ...rest } = req.query;
     const message = new URLSearchParams(rest).toString();
 
@@ -28,15 +28,15 @@ export default async function handler(req, res) {
         Buffer.from(hmac)
       );
 
-    // 3️⃣ 🔥 ОБМЕН code → access_token (ГЛАВНОЕ)
+    // 3️⃣ 🔥 ПРАВИЛЬНЫЙ ОБМЕН code → access_token (FORM ENCODED)
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: JSON.stringify({
+        body: new URLSearchParams({
           client_id: process.env.SHOPIFY_CLIENT_ID,
           client_secret: process.env.SHOPIFY_CLIENT_SECRET,
           code,
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 4️⃣ ✅ УСПЕХ — Shopify подтвердил доступ
+    // 4️⃣ УСПЕШНЫЙ РЕЗУЛЬТАТ
     return res.status(200).json({
       ok: true,
       step: "2.6.3",
