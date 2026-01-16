@@ -2,20 +2,23 @@ import crypto from "crypto";
 
 export default async function handler(req, res) {
   try {
-    const { shop, code, hmac, ...rest } = req.query;
+    const { shop, code, hmac } = req.query;
 
-    // 1. Базовые проверки
     if (!shop || !code || !hmac) {
       return res.status(400).json({
         ok: false,
-        error: "Missing required query parameters",
+        error: "Missing required OAuth parameters",
       });
     }
 
-    // 2. Проверка HMAC
-    const message = Object.keys(rest)
+    // 1. Проверка HMAC
+    const params = { ...req.query };
+    delete params.hmac;
+    delete params.signature;
+
+    const message = Object.keys(params)
       .sort()
-      .map((key) => `${key}=${rest[key]}`)
+      .map((key) => `${key}=${params[key]}`)
       .join("&");
 
     const generatedHmac = crypto
@@ -35,7 +38,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3. Обмен code → access_token
+    // 2. Обмен code → access_token
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
@@ -49,31 +52,28 @@ export default async function handler(req, res) {
       }
     );
 
-    const contentType = tokenResponse.headers.get("content-type");
+    const tokenData = await tokenResponse.json();
 
-    if (!contentType || !contentType.includes("application/json")) {
-      const text = await tokenResponse.text();
+    if (!tokenData.access_token) {
       return res.status(500).json({
         ok: false,
-        error: "Shopify did not return JSON",
-        rawResponsePreview: text.slice(0, 200),
+        error: "Access token not received",
+        tokenData,
       });
     }
 
-    const tokenData = await tokenResponse.json();
+    // ⚠️ ПОКА НЕ СОХРАНЯЕМ В БАЗУ — ЭТО СЛЕДУЮЩИЙ ШАГ
+    const accessToken = tokenData.access_token;
 
-    // ⚠️ ПОКА НЕ СОХРАНЯЕМ В БД — просто проверяем
-    return res.status(200).json({
-      ok: true,
-      step: "2.6.3",
-      shop,
-      accessTokenReceived: Boolean(tokenData.access_token),
-    });
-  } catch (err) {
+    // 3. Успешная установка — редирект в админку Shopify
+    return res.redirect(
+      `https://${shop}/admin/apps`
+    );
+  } catch (error) {
+    console.error("OAuth callback error:", error);
     return res.status(500).json({
       ok: false,
       error: "Internal server error",
-      details: err.message,
     });
   }
 }
