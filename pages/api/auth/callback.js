@@ -1,25 +1,27 @@
 import crypto from "crypto";
-import { Client } from "pg";
+import { Pool } from "pg";
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
 export default async function handler(req, res) {
   try {
-    const { shop, hmac, code, state } = req.query;
+    const { shop, code, hmac } = req.query;
 
-    if (!shop || !hmac || !code) {
-      return res.status(400).json({
-        ok: false,
-        error: "Missing required OAuth parameters",
-      });
+    if (!shop || !code || !hmac) {
+      return res.status(400).json({ ok: false, error: "Missing params" });
     }
 
-    // 1️⃣ Проверка HMAC
+    // 1. Проверка HMAC
     const params = { ...req.query };
     delete params.hmac;
     delete params.signature;
 
     const message = Object.keys(params)
       .sort()
-      .map((key) => `${key}=${Array.isArray(params[key]) ? params[key].join(",") : params[key]}`)
+      .map((key) => `${key}=${params[key]}`)
       .join("&");
 
     const generatedHmac = crypto
@@ -27,26 +29,21 @@ export default async function handler(req, res) {
       .update(message)
       .digest("hex");
 
-    const hmacValid = crypto.timingSafeEqual(
-      Buffer.from(generatedHmac, "utf-8"),
-      Buffer.from(hmac, "utf-8")
-    );
-
-    if (!hmacValid) {
-      return res.status(401).json({
-        ok: false,
-        error: "HMAC validation failed",
-      });
+    if (
+      !crypto.timingSafeEqual(
+        Buffer.from(generatedHmac),
+        Buffer.from(hmac)
+      )
+    ) {
+      return res.status(401).json({ ok: false, error: "Invalid HMAC" });
     }
 
-    // 2️⃣ Обмен code → access_token
+    // 2. Обмен code → access_token
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           client_id: process.env.SHOPIFY_CLIENT_ID,
           client_secret: process.env.SHOPIFY_CLIENT_SECRET,
@@ -58,55 +55,37 @@ export default async function handler(req, res) {
     const tokenData = await tokenResponse.json();
 
     if (!tokenData.access_token) {
-      return res.status(500).json({
-        ok: false,
-        error: "Failed to retrieve access token",
-        details: tokenData,
-      });
+      return res
+        .status(500)
+        .json({ ok: false, error: "No access token", tokenData });
     }
 
-    const accessToken = tokenData.access_token;
+    const { access_token, scope } = tokenData;
 
-    // 3️⃣ Сохранение access_token в БД (Neon)
-    const client = new Client({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-    });
-
-    await client.connect();
-
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS shop_tokens (
-        shop TEXT PRIMARY KEY,
-        access_token TEXT NOT NULL,
-        installed_at TIMESTAMP DEFAULT NOW()
-      );
-    `);
-
-    await client.query(
+    // 3. Сохранение в Neon
+    await pool.query(
       `
-      INSERT INTO shop_tokens (shop, access_token)
-      VALUES ($1, $2)
+      INSERT INTO shopify_tokens (shop, access_token, scope)
+      VALUES ($1, $2, $3)
       ON CONFLICT (shop)
-      DO UPDATE SET access_token = EXCLUDED.access_token;
+      DO UPDATE SET
+        access_token = EXCLUDED.access_token,
+        scope = EXCLUDED.scope,
+        installed_at = now()
       `,
-      [shop, accessToken]
+      [shop, access_token, scope]
     );
 
-    await client.end();
-
-    // 4️⃣ УСПЕХ
-    return res.status(200).json({
-      ok: true,
-      message: "OAuth completed successfully",
-      shop,
-    });
-
-  } catch (error) {
-    console.error("OAuth error:", error);
+    // 4. Финальный редирект (пока простой)
+    return res.redirect(
+      `https://${shop}/admin/apps`
+    );
+  } catch (err) {
+    console.error("OAuth callback error:", err);
     return res.status(500).json({
       ok: false,
       error: "Internal server error",
+      details: err.message,
     });
   }
 }
