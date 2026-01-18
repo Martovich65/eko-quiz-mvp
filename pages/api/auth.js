@@ -1,18 +1,34 @@
-export default async function handler(req, res) {
-  const shop = req.query.shop;
+// pages/api/auth.js
 
-  if (!shop) {
-    return res.status(400).send("Missing ?shop parameter");
-  }
+import crypto from "crypto";
 
-  const redirectUri = `https://${req.headers.host}/api/auth/callback`;
+export default function handler(req, res) {
+  try {
+    const { shop } = req.query;
 
-  const installUrl =
-    `https://${shop}/admin/oauth/authorize` +
-    `?client_id=${process.env.SHOPIFY_CLIENT_ID}` +
-    `&scope=read_customers,write_customers,read_marketing_events,write_marketing_events` +
-    `&redirect_uri=${encodeURIComponent(redirectUri)}`;
+    // 1. Проверка shop
+    if (!shop) {
+      return res.status(400).json({
+        ok: false,
+        error: "Missing shop parameter",
+      });
+    }
 
-  res.redirect(installUrl);
-}
+    // 2. Проверка переменных окружения
+    const clientId = process.env.SHOPIFY_API_KEY;
+    const appUrl = process.env.SHOPIFY_APP_URL;
 
+    if (!clientId || !appUrl) {
+      return res.status(500).json({
+        ok: false,
+        error: "Missing SHOPIFY_API_KEY or SHOPIFY_APP_URL",
+      });
+    }
+
+    // 3. Генерируем state (ОБЯЗАТЕЛЬНО для OAuth)
+    const state = crypto.randomBytes(16).toString("hex");
+
+    // 4. Формируем redirect_uri
+    const redirectUri = `${appUrl}/api/auth/callback`;
+
+    // 5. Формируем OAuth URL
