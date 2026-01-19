@@ -1,7 +1,6 @@
 // pages/api/auth/callback.js
 
 import crypto from "crypto";
-import fetch from "node-fetch";
 import { Pool } from "pg";
 
 export default async function handler(req, res) {
@@ -15,7 +14,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // 1. Проверяем ENV
     const {
       SHOPIFY_API_KEY,
       SHOPIFY_API_SECRET,
@@ -29,7 +27,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2. Проверка HMAC
+    // 1. HMAC check
     const query = { ...req.query };
     delete query.hmac;
     delete query.signature;
@@ -51,7 +49,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3. Меняем code → access_token
+    // 2. code → access_token
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
@@ -75,10 +73,9 @@ export default async function handler(req, res) {
       });
     }
 
-    const access_token = tokenData.access_token;
-    const scope = tokenData.scope;
+    const { access_token, scope } = tokenData;
 
-    // 4. Сохраняем токен в БД
+    // 3. Save to DB
     const pool = new Pool({
       connectionString: DATABASE_URL,
       ssl: { rejectUnauthorized: false },
@@ -99,7 +96,6 @@ export default async function handler(req, res) {
 
     await pool.end();
 
-    // 5. УСПЕХ
     return res.status(200).json({
       ok: true,
       step: "oauth_complete_and_saved",
