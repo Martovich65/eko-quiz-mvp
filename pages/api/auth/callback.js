@@ -11,11 +11,11 @@ export default async function handler(req, res) {
     if (!shop || !code || !hmac) {
       return res.status(400).json({
         ok: false,
-        error: "Missing required OAuth parameters",
+        error: "Missing OAuth parameters",
       });
     }
 
-    // 1. Проверка env
+    // 1. Проверяем ENV
     const {
       SHOPIFY_API_KEY,
       SHOPIFY_API_SECRET,
@@ -51,7 +51,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3. Обмен code → access_token
+    // 3. Меняем code → access_token
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
@@ -78,7 +78,7 @@ export default async function handler(req, res) {
     const access_token = tokenData.access_token;
     const scope = tokenData.scope;
 
-    // 4. Сохраняем в БД (Neon / Postgres)
+    // 4. Сохраняем токен в БД
     const pool = new Pool({
       connectionString: DATABASE_URL,
       ssl: { rejectUnauthorized: false },
