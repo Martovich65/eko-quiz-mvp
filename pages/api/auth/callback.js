@@ -1,12 +1,10 @@
-// pages/api/auth/callback.js
-
 import crypto from "crypto";
+import { Pool } from "pg";
 
 export default async function handler(req, res) {
   try {
-    const { shop, code, hmac, state } = req.query;
+    const { shop, code, hmac } = req.query;
 
-    // 1. Базовая проверка параметров
     if (!shop || !code || !hmac) {
       return res.status(400).json({
         ok: false,
@@ -14,20 +12,10 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2. Проверка env
-    const apiKey = process.env.SHOPIFY_API_KEY;
-    const apiSecret = process.env.SHOPIFY_API_SECRET;
-
-    if (!apiKey || !apiSecret) {
-      return res.status(500).json({
-        ok: false,
-        error: "Missing SHOPIFY_API_KEY or SHOPIFY_API_SECRET",
-      });
-    }
-
-    // 3. Проверка HMAC (обязательно)
+    // 1. Проверка HMAC
     const query = { ...req.query };
     delete query.hmac;
+    delete query.signature;
 
     const message = Object.keys(query)
       .sort()
@@ -35,29 +23,32 @@ export default async function handler(req, res) {
       .join("&");
 
     const generatedHmac = crypto
-      .createHmac("sha256", apiSecret)
+      .createHmac("sha256", process.env.SHOPIFY_API_SECRET)
       .update(message)
       .digest("hex");
 
     if (generatedHmac !== hmac) {
       return res.status(401).json({
         ok: false,
-        error: "HMAC validation failed",
+        error: "HMAC verification failed",
       });
     }
 
-    // 4. Обмен code → access_token (fetch встроен в Node 18 / Vercel)
-    const tokenResponse = await fetch(`https://${shop}/admin/oauth/access_token`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        client_id: apiKey,
-        client_secret: apiSecret,
-        code,
-      }),
-    });
+    // 2. Запрос access_token у Shopify
+    const tokenResponse = await fetch(
+      `https://${shop}/admin/oauth/access_token`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          client_id: process.env.SHOPIFY_API_KEY,
+          client_secret: process.env.SHOPIFY_API_SECRET,
+          code,
+        }),
+      }
+    );
 
     const tokenData = await tokenResponse.json();
 
@@ -69,13 +60,32 @@ export default async function handler(req, res) {
       });
     }
 
-    // 5. УСПЕХ — токен получен и проверен
+    // 3. Сохраняем в БД
+    const pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    });
+
+    await pool.query(
+      `
+      INSERT INTO shops (shop, access_token, scopes)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (shop)
+      DO UPDATE SET
+        access_token = EXCLUDED.access_token,
+        scopes = EXCLUDED.scopes,
+        installed_at = NOW()
+      `,
+      [shop, tokenData.access_token, tokenData.scope]
+    );
+
+    await pool.end();
+
+    // 4. УСПЕХ
     return res.status(200).json({
       ok: true,
-      step: "oauth_complete_verified",
+      step: "oauth_complete_and_saved",
       shop,
-      scopes: tokenData.scope,
-      access_token_preview: tokenData.access_token.slice(0, 6) + "…",
     });
   } catch (err) {
     console.error("OAuth callback error:", err);
