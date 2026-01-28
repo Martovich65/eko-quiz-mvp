@@ -1,22 +1,23 @@
 import crypto from "crypto";
 import { Pool } from "pg";
-import fetch from "node-fetch";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
 
 export default async function handler(req, res) {
   try {
-    const { shop, hmac, code, state } = req.query;
+    const { shop, hmac, code } = req.query;
 
     if (!shop || !hmac || !code) {
-      return res
-        .status(400)
-        .json({ ok: false, error: "Missing shop, hmac or code" });
+      return res.status(400).json({
+        ok: false,
+        error: "Missing shop, hmac or code",
+      });
     }
 
-    // 1️⃣ Проверка HMAC (безопасность Shopify)
+    // 1️⃣ Проверка HMAC
     const query = { ...req.query };
     delete query.hmac;
     delete query.signature;
@@ -38,7 +39,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2️⃣ Обмен code → access_token
+    // 2️⃣ Обмен code → access_token (fetch встроен в Next.js!)
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
@@ -65,7 +66,7 @@ export default async function handler(req, res) {
     const accessToken = tokenData.access_token;
     const scopes = tokenData.scope;
 
-    // 3️⃣ СОХРАНЕНИЕ В БД (Neon / Postgres)
+    // 3️⃣ Сохраняем в Neon (Postgres)
     const client = await pool.connect();
 
     await client.query(
@@ -77,13 +78,13 @@ export default async function handler(req, res) {
         access_token = EXCLUDED.access_token,
         scopes = EXCLUDED.scopes,
         installed_at = NOW();
-    `,
+      `,
       [shop, accessToken, scopes]
     );
 
     client.release();
 
-    // 4️⃣ УСПЕХ
+    // 4️⃣ Успех
     return res.status(200).json({
       ok: true,
       step: "oauth_complete_saved",
