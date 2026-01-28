@@ -1,25 +1,29 @@
 import crypto from "crypto";
 import { Pool } from "pg";
+import fetch from "node-fetch";
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
 export default async function handler(req, res) {
   try {
-    const { shop, code, hmac } = req.query;
+    const { shop, hmac, code, state } = req.query;
 
-    if (!shop || !code || !hmac) {
-      return res.status(400).json({
-        ok: false,
-        error: "Missing shop or code",
-      });
+    if (!shop || !hmac || !code) {
+      return res
+        .status(400)
+        .json({ ok: false, error: "Missing shop, hmac or code" });
     }
 
-    // 1. Проверка HMAC
+    // 1️⃣ Проверка HMAC (безопасность Shopify)
     const query = { ...req.query };
     delete query.hmac;
     delete query.signature;
 
     const message = Object.keys(query)
       .sort()
-      .map((key) => `${key}=${Array.isArray(query[key]) ? query[key].join(",") : query[key]}`)
+      .map((key) => `${key}=${query[key]}`)
       .join("&");
 
     const generatedHmac = crypto
@@ -30,18 +34,16 @@ export default async function handler(req, res) {
     if (generatedHmac !== hmac) {
       return res.status(401).json({
         ok: false,
-        error: "HMAC verification failed",
+        error: "HMAC validation failed",
       });
     }
 
-    // 2. Запрос access_token у Shopify
+    // 2️⃣ Обмен code → access_token
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           client_id: process.env.SHOPIFY_API_KEY,
           client_secret: process.env.SHOPIFY_API_SECRET,
@@ -60,35 +62,37 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3. Сохраняем в БД
-    const pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-    });
+    const accessToken = tokenData.access_token;
+    const scopes = tokenData.scope;
 
-    await pool.query(
+    // 3️⃣ СОХРАНЕНИЕ В БД (Neon / Postgres)
+    const client = await pool.connect();
+
+    await client.query(
       `
-      INSERT INTO shops (shop, access_token, scopes)
-      VALUES ($1, $2, $3)
+      INSERT INTO shops (shop, access_token, scopes, installed_at)
+      VALUES ($1, $2, $3, NOW())
       ON CONFLICT (shop)
       DO UPDATE SET
         access_token = EXCLUDED.access_token,
         scopes = EXCLUDED.scopes,
-        installed_at = NOW()
-      `,
-      [shop, tokenData.access_token, tokenData.scope]
+        installed_at = NOW();
+    `,
+      [shop, accessToken, scopes]
     );
 
-    await pool.end();
+    client.release();
 
-    // 4. УСПЕХ
+    // 4️⃣ УСПЕХ
     return res.status(200).json({
       ok: true,
-      step: "oauth_complete_and_saved",
+      step: "oauth_complete_saved",
       shop,
+      scopes,
+      access_token_preview: accessToken.slice(0, 6) + "…",
     });
   } catch (err) {
-    console.error("OAuth callback error:", err);
+    console.error("CALLBACK ERROR:", err);
     return res.status(500).json({
       ok: false,
       error: "Internal server error",
