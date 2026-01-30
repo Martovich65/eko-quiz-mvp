@@ -1,30 +1,34 @@
-import crypto from "crypto";
-import { Pool } from "pg";
+// pages/api/auth/callback.js
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
+import crypto from "crypto";
+import { getPool } from "../../../lib/db";
 
 export default async function handler(req, res) {
   try {
-    const { shop, hmac, code } = req.query;
+    const { shop, code, hmac } = req.query;
 
-    if (!shop || !hmac || !code) {
+    // 1. Проверки
+    if (!shop || !code || !hmac) {
       return res.status(400).json({
         ok: false,
-        error: "Missing shop, hmac or code",
+        error: "Missing required query params",
       });
     }
 
-    // 1️⃣ Проверка HMAC
+    if (!process.env.SHOPIFY_API_KEY || !process.env.SHOPIFY_API_SECRET) {
+      return res.status(500).json({
+        ok: false,
+        error: "Missing Shopify env vars",
+      });
+    }
+
+    // 2. Проверка HMAC
     const query = { ...req.query };
     delete query.hmac;
-    delete query.signature;
 
     const message = Object.keys(query)
       .sort()
-      .map((key) => `${key}=${query[key]}`)
+      .map((key) => `${key}=${Array.isArray(query[key]) ? query[key].join(",") : query[key]}`)
       .join("&");
 
     const generatedHmac = crypto
@@ -39,7 +43,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 2️⃣ Обмен code → access_token (fetch встроен в Next.js!)
+    // 3. Обмен code → access_token (fetch есть в Node 18, ничего ставить не надо)
     const tokenResponse = await fetch(
       `https://${shop}/admin/oauth/access_token`,
       {
@@ -64,36 +68,33 @@ export default async function handler(req, res) {
     }
 
     const accessToken = tokenData.access_token;
-    const scopes = tokenData.scope;
+    const scopes = tokenData.scope || "";
 
-    // 3️⃣ Сохраняем в Neon (Postgres)
-    const client = await pool.connect();
+    // 4. Сохраняем в БД
+    const pool = getPool();
 
-    await client.query(
+    await pool.query(
       `
-      INSERT INTO shops (shop, access_token, scopes, installed_at)
-      VALUES ($1, $2, $3, NOW())
+      INSERT INTO shops (shop, scopes, installed_at)
+      VALUES ($1, $2, NOW())
       ON CONFLICT (shop)
       DO UPDATE SET
-        access_token = EXCLUDED.access_token,
         scopes = EXCLUDED.scopes,
-        installed_at = NOW();
+        installed_at = NOW()
       `,
-      [shop, accessToken, scopes]
+      [shop, scopes]
     );
 
-    client.release();
-
-    // 4️⃣ Успех
+    // 5. УСПЕХ
     return res.status(200).json({
       ok: true,
-      step: "oauth_complete_saved",
+      step: "oauth_complete_and_saved",
       shop,
       scopes,
       access_token_preview: accessToken.slice(0, 6) + "…",
     });
   } catch (err) {
-    console.error("CALLBACK ERROR:", err);
+    console.error("OAuth callback error:", err);
     return res.status(500).json({
       ok: false,
       error: "Internal server error",
