@@ -13,22 +13,29 @@ export default async function handler(req, res) {
       });
     }
 
-    // 1. Берём токен из БД
-    const { rows } = await pool.query(
+    // 1️⃣ Берём access_token из БД
+    const result = await pool.query(
       "SELECT access_token FROM shops WHERE shop = $1",
       [shop]
     );
 
-    if (!rows.length || !rows[0].access_token) {
+    if (result.rows.length === 0) {
       return res.status(404).json({
         ok: false,
-        error: "Access token not found in DB",
+        error: "Shop not found in database",
       });
     }
 
-    const accessToken = rows[0].access_token;
+    const accessToken = result.rows[0].access_token;
 
-    // 2. Запрос к Shopify API
+    if (!accessToken) {
+      return res.status(500).json({
+        ok: false,
+        error: "Access token missing in database",
+      });
+    }
+
+    // 2️⃣ Запрос в Shopify Admin API
     const response = await fetch(
       `https://${shop}/admin/api/2024-01/shop.json`,
       {
@@ -40,31 +47,32 @@ export default async function handler(req, res) {
       }
     );
 
-    const data = await response.json();
-
+    // ⛔ ВАЖНО: проверяем статус
     if (!response.ok) {
+      const text = await response.text();
       return res.status(500).json({
         ok: false,
         error: "Shopify API error",
-        details: data,
+        status: response.status,
+        details: text,
       });
     }
 
-    // 3. УСПЕХ 🎉
+    const data = await response.json();
+
+    // ✅ УСПЕХ
     return res.status(200).json({
       ok: true,
-      step: "shopify_api_live",
-      shop: data.shop.name,
-      email: data.shop.email,
-      plan: data.shop.plan_name,
-      country: data.shop.country_name,
+      shop: data.shop,
     });
-  } catch (err) {
-    console.error("Shopify API test error:", err);
+
+  } catch (error) {
+    console.error("SHOPIFY API TEST ERROR:", error);
+
     return res.status(500).json({
       ok: false,
       error: "Internal server error",
+      message: error.message,
     });
   }
 }
-
