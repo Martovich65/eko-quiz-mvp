@@ -224,8 +224,7 @@ if (photoRejected) {
     setSelfie(imageData);
     stopCamera();
   };
-  const startPhotoAnalysis = () => {
- const startPhotoAnalysis = () => {
+const startPhotoAnalysis = () => {
   setPhotoAnalyzing(true);
   setPhotoRejected(false);
 
