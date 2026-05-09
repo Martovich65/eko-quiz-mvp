@@ -2,6 +2,7 @@
 // Полностью замените содержимое файла этим кодом.
 
 import { useEffect, useRef, useState } from "react";
+import analyzeSkin from "../lib/skinAnalysis";
 
 export default function Quiz() {
   const [step, setStep] = useState(0);
