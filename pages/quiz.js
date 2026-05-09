@@ -27,6 +27,9 @@ export default function Quiz() {
   const [emailError, setEmailError] = useState("");
   const [showProblemError, setShowProblemError] = useState(false);
 
+  const [photoAnalyzing, setPhotoAnalyzing] = useState(false);
+  const [photoRejected, setPhotoRejected] = useState(false);
+
   const phoneRegex = /^(?:\\+380\\d{9}|0\\d{9}|\\d{10})$/;
   const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
 
