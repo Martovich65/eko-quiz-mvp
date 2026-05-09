@@ -15,9 +15,11 @@ export default function Quiz() {
 
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [showProblemError, setShowProblemError] = useState(false);
 
-  /* ===== СТИЛИ ===== */
+  const phoneRegex =
+    /^(?:\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\d{7}$/;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const optionStyle = (isActive) => ({
     appearance: "none",
@@ -49,21 +51,5 @@ export default function Quiz() {
     opacity: disabled ? 0.7 : 1,
   });
 
-  /* ===== REGEX ===== */
-
-  const phoneRegex =
-    /^(?:\+380|0)(39|50|63|66|67|68|73|91|92|93|94|95|96|97|98|99)\d{7}$/;
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
   return (
-    <main
-      style={{
-        maxWidth: 600,
-        margin: "40px auto",
-        fontFamily: "sans-serif",
-      }}
-    >
-      <h1>Онлайн-діагностика шкіри</h1>
-
 }
