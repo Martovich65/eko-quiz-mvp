@@ -13,18 +13,7 @@ export default function Quiz() {
   if (photoAnalyzing) {
   return (
     <div style={containerStyle}>
-    {photoAnalyzing && (
-  <>
-    <h1>Онлайн-діагностика шкіри</h1>
-    <h2>Аналізуємо ваше фото...</h2>
-    <p>Будь ласка, зачекайте 3–5 секунд.</p>
-  </>
-)}
-      <h1>Онлайн-діагностика шкіри</h1>
-      <h2>Аналізуємо ваше фото...</h2>
-      <p>Будь ласка, зачекайте 3–5 секунд.</p>
-    </div>
-  );
+  
 }
 
   const [stream, setStream] = useState(null);
