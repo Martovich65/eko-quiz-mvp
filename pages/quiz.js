@@ -459,6 +459,7 @@ if (photoRejected) {
   // +380XXXXXXXXX  (13 символов вместе с "+")
   // 380XXXXXXXXX   (12 цифр)
   // 0XXXXXXXXX     (10 цифр)
+  // XXXXXXXXX     (9 цифр)
   const isPhoneValid =
     /^\+380\d{9}$/.test(phoneValue) ||
     /^380\d{9}$/.test(phoneValue) ||
