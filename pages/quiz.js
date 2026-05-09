@@ -7,6 +7,7 @@ export default function Quiz() {
   const [step, setStep] = useState(0);
 
   const videoRef = useRef(null);
+  
   const canvasRef = useRef(null);
 
   const [stream, setStream] = useState(null);
@@ -224,6 +225,15 @@ if (photoRejected) {
     stopCamera();
   };
   const startPhotoAnalysis = () => {
+  setPhotoAnalyzing(true);
+  setPhotoRejected(false);
+
+  setTimeout(() => {
+    setPhotoAnalyzing(false);
+    setPhotoRejected(true);
+    setStep(999);
+  }, 4000);
+};
   setPhotoAnalyzing(true);
   setPhotoRejected(false);
 
