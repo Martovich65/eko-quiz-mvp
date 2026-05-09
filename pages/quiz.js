@@ -182,7 +182,7 @@ export default function Quiz() {
                 alt="Ваше селфі"
                 style={{ width: "100%", marginTop: 16, borderRadius: 12 }}
               />
-              <button type="button" style={primaryButtonStyle(false)} onClick={() => setStep(1)}>
+              <button type="button" style={primaryButtonStyle(false)} onClick={startPhotoAnalysis}>
                 Продовжити
               </button>
             </>
