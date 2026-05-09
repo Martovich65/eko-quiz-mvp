@@ -1,8 +1,4 @@
-# Полный файл `pages/quiz.js`
 
-Скопируйте **весь код ниже** и полностью замените содержимое файла `pages/quiz.js`.
-
-```javascript
 import { useState } from "react";
 
 export default function Quiz() {
