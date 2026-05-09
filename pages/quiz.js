@@ -129,6 +129,15 @@ export default function Quiz() {
     setSelfie(imageData);
     stopCamera();
   };
+  const startPhotoAnalysis = () => {
+  setPhotoAnalyzing(true);
+  setPhotoRejected(false);
+
+  setTimeout(() => {
+    setPhotoAnalyzing(false);
+    setPhotoRejected(true);
+  }, 4000);
+};
 
   return (
     <main
