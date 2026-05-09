@@ -14,8 +14,6 @@ export default function Quiz() {
   return (
     <div style={containerStyle}>
   
-}
-
   const [stream, setStream] = useState(null);
   const [cameraOn, setCameraOn] = useState(false);
   const [selfie, setSelfie] = useState(null);
