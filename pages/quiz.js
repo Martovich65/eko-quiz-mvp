@@ -65,6 +65,16 @@ export default function Quiz() {
   });
 
   const startCamera = async () => {
+    // Если приложение открыто внутри iframe Shopify Admin,
+    // браузер может блокировать доступ к камере.
+    if (window.self !== window.top) {
+      alert(
+        "Камера не працює всередині адміністративної панелі Shopify. Квіз буде відкрито в новій вкладці, де камера працюватиме коректно."
+      );
+      window.open(window.location.href, "_blank");
+      return;
+    }
+
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user" },
@@ -72,8 +82,10 @@ export default function Quiz() {
       });
       setStream(mediaStream);
       setCameraOn(true);
-    } catch {
-      alert("Не вдалося отримати доступ до камери.");
+    } catch (error) {
+      alert(
+        "Не вдалося отримати доступ до камери. Дозвольте доступ до камери у браузері та спробуйте ще раз."
+      );
     }
   };
 
