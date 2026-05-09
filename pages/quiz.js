@@ -225,14 +225,33 @@ if (photoRejected) {
     setSelfie(imageData);
     stopCamera();
   };
-const startPhotoAnalysis = () => {
+const startPhotoAnalysis = async () => {
+  if (!selfie) return;
+
   setPhotoAnalyzing(true);
   setPhotoRejected(false);
 
-  setTimeout(() => {
+  try {
+    // Имитация короткого сканирования
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const result = await analyzeSkin(selfie);
+
     setPhotoAnalyzing(false);
+
+    // Если фото не прошло проверку качества
+    if (!result.photoQuality.passed) {
+      setPhotoRejected(true);
+      return;
+    }
+
+    // Фото хорошее — переходим к вопросам
     setStep(1);
-  }, 4000);
+  } catch (error) {
+    console.error("Skin analysis error:", error);
+    setPhotoAnalyzing(false);
+    setPhotoRejected(true);
+  }
 };
   return (
     <main
