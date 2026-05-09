@@ -344,74 +344,151 @@ export default function Quiz() {
         </>
       )}
 
-      {step === 7 && (
-        <>
-          <h2>Контактні дані</h2>
+    {/* ===== STEP 7 ===== */}
+{step === 7 && (() => {
+  const phoneValue = phone.trim();
+  const emailValue = email.trim();
 
-          <input
-            placeholder="Імʼя"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            style={{ width: "100%", padding: 14, marginBottom: 12 }}
-          />
+  // Допустимые форматы телефонов:
+  // +380XXXXXXXXX  (13 символов вместе с "+")
+  // 380XXXXXXXXX   (12 цифр)
+  // 0XXXXXXXXX     (10 цифр)
+  const isPhoneValid =
+    /^\+380\d{9}$/.test(phoneValue) ||
+    /^380\d{9}$/.test(phoneValue) ||
+    /^0\d{9}$/.test(phoneValue);
 
-          <input
-            placeholder="Телефон"
-            value={phone}
-            onChange={(e) => {
-              const value = e.target.value.replace(/[^\\d+]/g, "");
-              setPhone(value);
+  // Проверка e-mail
+  const isEmailValid =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue);
 
-              if (!value.trim()) {
-                setPhoneError("");
-              } else if (phoneRegex.test(value)) {
-                setPhoneError("");
-              } else {
-                setPhoneError("Введіть коректний номер телефону України");
-              }
-            }}
-            style={{ width: "100%", padding: 14, marginBottom: 4 }}
-          />
+  // Имя обязательно
+  const isNameValid = name.trim().length > 0;
 
-          {phoneError && (
-            <div style={{ color: "#2f855a", marginBottom: 12 }}>
-              {phoneError}
-            </div>
-          )}
+  // Общая валидность формы
+  const isFormValid =
+    isNameValid &&
+    isPhoneValid &&
+    isEmailValid;
 
-          <input
-            placeholder="Email"
-            value={email}
-            onChange={(e) => {
-              const value = e.target.value;
-              setEmail(value);
+  return (
+    <>
+      <h2>Контактні дані</h2>
 
-              if (!value.trim()) {
-                setEmailError("");
-              } else if (emailRegex.test(value)) {
-                setEmailError("");
-              } else {
-                setEmailError("Введіть коректний e-mail");
-              }
-            }}
-            style={{ width: "100%", padding: 14, marginBottom: 4 }}
-          />
+      {/* ===== ІМ'Я ===== */}
+      <input
+        type="text"
+        placeholder="Імʼя"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        style={{
+          width: "100%",
+          padding: 14,
+          marginBottom: 12,
+          border: "1px solid #cfcfcf",
+          fontSize: 16,
+        }}
+      />
 
-          {emailError && (
-            <div style={{ color: "#2f855a", marginBottom: 12 }}>
-              {emailError}
-            </div>
-          )}
+      {/* ===== ТЕЛЕФОН ===== */}
+      <input
+        type="tel"
+        placeholder="Телефон"
+        value={phone}
+        onChange={(e) => {
+          const value = e.target.value.trim();
+          setPhone(e.target.value);
 
-          <button
-            style={primaryButtonStyle(!isStep7Valid)}
-            disabled={!isStep7Valid}
-            onClick={() => setStep(8)}
-          >
-            Отримати персональні рекомендації
-          </button>
-        </>
+          const valid =
+            /^\+380\d{9}$/.test(value) ||
+            /^380\d{9}$/.test(value) ||
+            /^0\d{9}$/.test(value);
+
+          if (value === "") {
+            setPhoneError("");
+          } else if (valid) {
+            setPhoneError("");
+          } else {
+            setPhoneError("Введіть коректний номер телефону України");
+          }
+        }}
+        style={{
+          width: "100%",
+          padding: 14,
+          marginBottom: 4,
+          border: "1px solid #cfcfcf",
+          fontSize: 16,
+        }}
+      />
+
+      {phoneError && (
+        <div
+          style={{
+            color: "#2f855a",
+            fontSize: 14,
+            marginBottom: 12,
+          }}
+        >
+          {phoneError}
+        </div>
       )}
+
+      {/* ===== EMAIL ===== */}
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => {
+          const value = e.target.value.trim();
+          setEmail(e.target.value);
+
+          const valid =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+          if (value === "") {
+            setEmailError("");
+          } else if (valid) {
+            setEmailError("");
+          } else {
+            setEmailError("Введіть коректний e-mail");
+          }
+        }}
+        style={{
+          width: "100%",
+          padding: 14,
+          marginBottom: 4,
+          border: "1px solid #cfcfcf",
+          fontSize: 16,
+        }}
+      />
+
+      {emailError && (
+        <div
+          style={{
+            color: "#2f855a",
+            fontSize: 14,
+            marginBottom: 12,
+          }}
+        >
+          {emailError}
+        </div>
+      )}
+
+      {/* ===== КНОПКА ===== */}
+      <button
+        type="button"
+        disabled={!isFormValid}
+        style={primaryButtonStyle(!isFormValid)}
+        onClick={() => {
+          if (!isFormValid) return;
+          setStep(8);
+        }}
+      >
+        Отримати персональні рекомендації
+      </button>
+    </>
+  );
+})()}
 
       {step === 8 && (
         <>
