@@ -99,6 +99,100 @@ export default function Quiz() {
   }, [cameraOn, stream]);
 
   useEffect(() => {
+    if (photoAnalyzing) {
+  return (
+    <main
+      style={{
+        maxWidth: 600,
+        margin: "40px auto",
+        padding: "0 16px",
+        fontFamily: "sans-serif",
+      }}
+    >
+      <h1>Онлайн-діагностика шкіри</h1>
+      <h2>Аналізуємо ваше фото…</h2>
+
+      {selfie && (
+        <img
+          src={selfie}
+          alt="Selfie"
+          style={{
+            width: "100%",
+            borderRadius: 12,
+            marginTop: 20,
+            marginBottom: 24,
+          }}
+        />
+      )}
+
+      <p>Оцінюємо якість фото. Будь ласка, зачекайте 3–5 секунд…</p>
+    </main>
+  );
+}
+
+if (photoRejected) {
+  return (
+    <main
+      style={{
+        maxWidth: 600,
+        margin: "40px auto",
+        padding: "0 16px",
+        fontFamily: "sans-serif",
+      }}
+    >
+      <h1>Онлайн-діагностика шкіри</h1>
+      <h2>Фото потребує повторного знімка</h2>
+
+      {selfie && (
+        <img
+          src={selfie}
+          alt="Selfie"
+          style={{
+            width: "100%",
+            borderRadius: 12,
+            marginTop: 20,
+            marginBottom: 24,
+          }}
+        />
+      )}
+
+      <p>
+        • Зніміть окуляри.
+        <br />
+        • Покращіть освітлення.
+        <br />
+        • Наблизьте обличчя до камери.
+      </p>
+
+      <button
+        type="button"
+        style={primaryButtonStyle(false)}
+        onClick={() => {
+          setPhotoRejected(false);
+          setSelfie(null);
+          setCameraOn(false);
+        }}
+      >
+        Зробити фото повторно
+      </button>
+
+      <button
+        type="button"
+        style={{
+          ...primaryButtonStyle(false),
+          marginTop: 12,
+          backgroundColor: "#1f2937",
+        }}
+        onClick={() => {
+          setPhotoRejected(false);
+          setStep(1);
+        }}
+      >
+        Продовжити без повторного фото
+      </button>
+    </main>
+  );
+}
     return () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
