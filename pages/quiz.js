@@ -230,7 +230,7 @@ const startPhotoAnalysis = () => {
 
   setTimeout(() => {
     setPhotoAnalyzing(false);
-    setPhotoRejected(true);
+    setStep(1);
   }, 4000);
 };
   return (
