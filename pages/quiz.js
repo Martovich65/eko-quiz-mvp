@@ -225,15 +225,7 @@ if (photoRejected) {
     stopCamera();
   };
   const startPhotoAnalysis = () => {
-  setPhotoAnalyzing(true);
-  setPhotoRejected(false);
-
-  setTimeout(() => {
-    setPhotoAnalyzing(false);
-    setPhotoRejected(true);
-    setStep(999);
-  }, 4000);
-};
+ const startPhotoAnalysis = () => {
   setPhotoAnalyzing(true);
   setPhotoRejected(false);
 
@@ -242,7 +234,6 @@ if (photoRejected) {
     setPhotoRejected(true);
   }, 4000);
 };
-
   return (
     <main
       style={{
