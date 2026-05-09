@@ -269,7 +269,7 @@ if (photoRejected) {
             </>
           )}
 
-          {selfie && (
+          {selfie && !photoAnalyzing && !photoRejected && (
             <>
               <img
                 src={selfie}
