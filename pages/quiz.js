@@ -10,6 +10,15 @@ export default function Quiz() {
   const videoRef = useRef(null);
   
   const canvasRef = useRef(null);
+  if (photoAnalyzing) {
+  return (
+    <div style={containerStyle}>
+      <h1>Онлайн-діагностика шкіри</h1>
+      <h2>Аналізуємо ваше фото...</h2>
+      <p>Будь ласка, зачекайте 3–5 секунд.</p>
+    </div>
+  );
+}
 
   const [stream, setStream] = useState(null);
   const [cameraOn, setCameraOn] = useState(false);
