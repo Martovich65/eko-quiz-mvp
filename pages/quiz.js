@@ -10,7 +10,66 @@ export default function Quiz() {
   const [step, setStep] = useState(0);
 
   // Selfie
-  const videoRef = useRef(null);
+  const videoRef = useRef(null);import { useEffect, useRef, useState } from "react";
+              }
+            }}
+            style={{ width: "100%", padding: 14, marginBottom: 4 }} />
+
+          {phoneError && (
+            <div style={{ color: "#2f855a", marginBottom: 12 }}>
+              {phoneError}
+            </div>
+          )}
+
+          <input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => {
+              const value = e.target.value;
+              setEmail(value);
+
+              if (!value.trim()) {
+                setEmailError("");
+              } else if (emailRegex.test(value)) {
+                setEmailError("");
+              } else {
+                setEmailError("Введіть коректний e-mail");
+              }
+            }}
+            style={{ width: "100%", padding: 14, marginBottom: 4 }} />
+
+          {emailError && (
+            <div style={{ color: "#2f855a", marginBottom: 12 }}>
+              {emailError}
+            </div>
+          )}
+
+          <button
+            style={primaryButtonStyle(!isStep7Valid)}
+            disabled={!isStep7Valid}
+            onClick={() => setStep(8)}>
+            Отримати персональні рекомендації
+          </button>
+        </>
+      )}
+
+      {step === 8 && (
+        <>
+          <h2>Ваші персональні набори догляду</h2>
+          <p>На основі діагностики ми підібрали оптимальні варіанти догляду саме для вас. 💚</p>
+
+          {selfie && (
+            <img
+              src={selfie}
+              alt="Ваше селфі"
+              style={{ width: "100%", marginTop: 16, borderRadius: 12 }} />
+          )}
+        </>
+      )}
+    </main>
+  );
+}
+
   const canvasRef = useRef(null);
   const [stream, setStream] = useState(null);
   const [cameraOn, setCameraOn] = useState(false);
