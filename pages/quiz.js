@@ -10,99 +10,115 @@ export default function Quiz() {
   const [cameraActive, setCameraActive] = useState(false);
   const [selfie, setSelfie] = useState(null);
   const [aiResults, setAiResults] = useState(null);
-  const [photoAnalyzing, setPhotoAnalyzing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // 1. Запуск камеры (без лишних проверок, прямой поток)
   const startCamera = async () => {
+    setCameraActive(true);
     try {
       const s = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: 1280, height: 720, facingMode: "user" } 
+        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } } 
       });
-      setStream(s);
+      
       if (videoRef.current) {
         videoRef.current.srcObject = s;
-        videoRef.current.play();
-        setCameraActive(true);
+        // Ждем готовности видео и запускаем
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current.play().catch(e => console.error("Play error:", e));
+        };
       }
+      setStream(s);
     } catch (err) {
-      alert("Камера заблокована або не знайдена");
+      console.error(err);
+      alert("Дозвольте доступ до камери у налаштуваннях браузера");
+      setCameraActive(false);
     }
   };
 
-  // 2. Снимок (захват текущего кадра из видеопотока)
   const takePhoto = () => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
     if (canvas && video) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      canvas.getContext("2d").drawImage(video, 0, 0);
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0);
+      
       const imgData = canvas.toDataURL("image/jpeg", 0.9);
       setSelfie(imgData);
       
-      // Останавливаем камеру после снимка
-      if (stream) stream.getTracks().forEach(track => track.stop());
+      // Выключаем поток
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
       setCameraActive(false);
+      setStream(null);
     }
   };
 
-  // 3. Анализ (отправка в Face++)
   const runAnalysis = async () => {
-    setPhotoAnalyzing(true);
+    setLoading(true);
     try {
       const res = await analyzeSkin(selfie);
       if (res && res.passed) {
         setAiResults(res.details);
-        setStep(1); // К контактам
+        setStep(1);
       } else {
-        alert("ИИ не впізнав обличчя. Спробуйте ще раз.");
+        alert("ИИ не розпізнав обличчя. Зробіть фото чіткіше.");
         setSelfie(null);
         startCamera();
       }
     } catch (e) {
-      alert("Помилка сервісу аналізу");
+      alert("Помилка зв'язку з сервером Face++");
     }
-    setPhotoAnalyzing(false);
+    setLoading(false);
   };
 
-  if (photoAnalyzing) return <div style={{textAlign:"center", padding:"50px"}}><h2>Аналізуємо...</h2></div>;
+  if (loading) return <div style={centerStyle}><h2>Еко красА AI аналізує...</h2></div>;
 
   return (
     <main style={{ maxWidth: 500, margin: "20px auto", padding: "20px", fontFamily: "sans-serif" }}>
-      <h1 style={{ textAlign: "center", color: "#2f855a" }}>Еко красА AI</h1>
+      <h1 style={{ textAlign: "center", color: "#2f855a", marginBottom: "30px" }}>Еко красА</h1>
 
       {step === 0 && (
-        <div>
+        <div style={{ textAlign: "center" }}>
+          {/* Блок видео */}
+          <div style={{ display: cameraActive ? "block" : "none", position: "relative", background: "#000", borderRadius: "15px", overflow: "hidden" }}>
+            <video 
+              ref={videoRef} 
+              muted 
+              playsInline 
+              autoPlay 
+              style={{ width: "100%", display: "block" }} 
+            />
+            <button onClick={takePhoto} style={snapBtnStyle}>Зробити фото</button>
+          </div>
+
+          {/* Начальная кнопка */}
           {!cameraActive && !selfie && (
-            <button onClick={startCamera} style={btnStyle}>Почати сканування</button>
+            <button onClick={startCamera} style={btnStyle}>Почати AI-сканування</button>
           )}
 
-          {cameraActive && (
-            <div style={{ position: "relative" }}>
-              <video ref={videoRef} playsInline style={{ width: "100%", borderRadius: "10px" }} />
-              <button onClick={takePhoto} style={snapBtnStyle}>Зробити фото</button>
-            </div>
-          )}
-
-          {selfie && (
+          {/* Превью снимка */}
+          {selfie && !cameraActive && (
             <div>
-              <img src={selfie} style={{ width: "100%", borderRadius: "10px" }} />
+              <img src={selfie} style={{ width: "100%", borderRadius: "15px" }} />
               <button onClick={runAnalysis} style={btnStyle}>Аналізувати стан шкіри</button>
-              <button onClick={() => { setSelfie(null); startCamera(); }} style={{ ...btnStyle, background: "#ccc" }}>Переробити</button>
+              <button onClick={() => { setSelfie(null); startCamera(); }} style={{ ...btnStyle, background: "#e2e8f0", color: "#4a5568" }}>Переробити</button>
             </div>
           )}
         </div>
       )}
 
-      {step === 1 && (
-        <div style={{ background: "#f0fff4", padding: "20px", borderRadius: "12px", border: "2px solid #2f855a" }}>
-          <h2>Результати:</h2>
-          <p>💧 Здоров'я: {100 - Math.round(aiResults.health)}%</p>
-          <p>✨ Пори: {100 - Math.round(aiResults.pore)}%</p>
-          <p>🌸 Акне: {100 - Math.round(aiResults.acne)}%</p>
-          <p>👁️ Очі: {100 - Math.round(aiResults.dark_circle)}%</p>
-          <p>🧬 Текстура: {100 - Math.round(aiResults.texture)}%</p>
-          <button onClick={() => window.location.href = 'https://ekokrasa.com.ua'} style={btnStyle}>До магазину</button>
+      {step === 1 && aiResults && (
+        <div style={{ background: "#f0fff4", padding: "25px", borderRadius: "15px", border: "2px solid #2f855a" }}>
+          <h2 style={{ color: "#2f855a", marginTop: 0 }}>Ваш результат:</h2>
+          <ul style={{ listStyle: "none", padding: 0, fontSize: "18px", lineHeight: "2" }}>
+            <li>💧 Здоров'я шкіри: {100 - Math.round(aiResults.health)}%</li>
+            <li>✨ Чистота пор: {100 - Math.round(aiResults.pore)}%</li>
+            <li>🌸 Відсутність акне: {100 - Math.round(aiResults.acne)}%</li>
+            <li>🧬 Текстура: {100 - Math.round(aiResults.texture)}%</li>
+          </ul>
+          <button onClick={() => window.location.href = 'https://ekokrasa.com.ua'} style={btnStyle}>Підібрати догляд</button>
         </div>
       )}
 
@@ -112,11 +128,13 @@ export default function Quiz() {
 }
 
 const btnStyle = {
-  width: "100%", padding: "15px", background: "#2f855a", color: "#fff",
-  border: "none", borderRadius: "8px", fontWeight: "bold", marginTop: "10px", cursor: "pointer"
+  width: "100%", padding: "18px", background: "#2f855a", color: "#fff",
+  border: "none", borderRadius: "12px", fontWeight: "bold", fontSize: "16px", cursor: "pointer", marginTop: "10px"
 };
 
 const snapBtnStyle = {
   position: "absolute", bottom: "20px", left: "50%", transform: "translateX(-50%)",
-  padding: "10px 20px", background: "#fff", border: "none", borderRadius: "50px", fontWeight: "bold"
+  padding: "12px 25px", background: "#fff", border: "none", borderRadius: "30px", fontWeight: "bold", cursor: "pointer", boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
 };
+
+const centerStyle = { textAlign: "center", marginTop: "100px", fontFamily: "sans-serif" };
