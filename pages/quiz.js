@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import analyzeSkin from "../lib/skinAnalysis";
 
 export default function Quiz() {
   const [step, setStep] = useState(0);
@@ -18,18 +17,15 @@ export default function Quiz() {
       const s = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } } 
       });
-      
       if (videoRef.current) {
         videoRef.current.srcObject = s;
-        // Ждем готовности видео и запускаем
         videoRef.current.onloadedmetadata = () => {
-          videoRef.current.play().catch(e => console.error("Play error:", e));
+          videoRef.current.play();
         };
       }
       setStream(s);
     } catch (err) {
-      console.error(err);
-      alert("Дозвольте доступ до камери у налаштуваннях браузера");
+      alert("Дозвольте доступ до камери");
       setCameraActive(false);
     }
   };
@@ -40,65 +36,55 @@ export default function Quiz() {
     if (canvas && video) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0);
-      
+      canvas.getContext("2d").drawImage(video, 0, 0);
       const imgData = canvas.toDataURL("image/jpeg", 0.9);
       setSelfie(imgData);
-      
-      // Выключаем поток
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
+      if (stream) stream.getTracks().forEach(t => t.stop());
       setCameraActive(false);
-      setStream(null);
     }
   };
 
   const runAnalysis = async () => {
     setLoading(true);
     try {
-      const res = await analyzeSkin(selfie);
-      if (res && res.passed) {
-        setAiResults(res.details);
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: selfie })
+      });
+      const data = await response.json();
+      if (data.passed && data.details) {
+        // Успешный выход из цикла ошибки Screenshot_35
+        setAiResults(data.details);
         setStep(1);
       } else {
-        alert("ИИ не розпізнав обличчя. Зробіть фото чіткіше.");
+        alert("Face++ не зміг обробити це фото. Спробуйте інше освітлення.");
         setSelfie(null);
         startCamera();
       }
-    } catch (e) {
-      alert("Помилка зв'язку з сервером Face++");
+    } catch (err) {
+      alert("Помилка з'єднання з Face++");
     }
     setLoading(false);
   };
 
-  if (loading) return <div style={centerStyle}><h2>Еко красА AI аналізує...</h2></div>;
+  if (loading) return <div style={{textAlign:"center", marginTop:"100px"}}><h2>Еко красА AI аналізує...</h2></div>;
 
   return (
     <main style={{ maxWidth: 500, margin: "20px auto", padding: "20px", fontFamily: "sans-serif" }}>
-      <h1 style={{ textAlign: "center", color: "#2f855a", marginBottom: "30px" }}>Еко красА</h1>
+      <h1 style={{ textAlign: "center", color: "#2f855a" }}>Еко красА</h1>
 
       {step === 0 && (
         <div style={{ textAlign: "center" }}>
-          {/* Блок видео */}
-          <div style={{ display: cameraActive ? "block" : "none", position: "relative", background: "#000", borderRadius: "15px", overflow: "hidden" }}>
-            <video 
-              ref={videoRef} 
-              muted 
-              playsInline 
-              autoPlay 
-              style={{ width: "100%", display: "block" }} 
-            />
+          <div style={{ display: cameraActive ? "block" : "none", position: "relative" }}>
+            <video ref={videoRef} muted playsInline autoPlay style={{ width: "100%", borderRadius: "15px" }} />
             <button onClick={takePhoto} style={snapBtnStyle}>Зробити фото</button>
           </div>
 
-          {/* Начальная кнопка */}
           {!cameraActive && !selfie && (
             <button onClick={startCamera} style={btnStyle}>Почати AI-сканування</button>
           )}
 
-          {/* Превью снимка */}
           {selfie && !cameraActive && (
             <div>
               <img src={selfie} style={{ width: "100%", borderRadius: "15px" }} />
@@ -111,12 +97,12 @@ export default function Quiz() {
 
       {step === 1 && aiResults && (
         <div style={{ background: "#f0fff4", padding: "25px", borderRadius: "15px", border: "2px solid #2f855a" }}>
-          <h2 style={{ color: "#2f855a", marginTop: 0 }}>Ваш результат:</h2>
+          <h2 style={{ color: "#2f855a" }}>Ваш результат:</h2>
           <ul style={{ listStyle: "none", padding: 0, fontSize: "18px", lineHeight: "2" }}>
-            <li>💧 Здоров'я шкіри: {100 - Math.round(aiResults.health)}%</li>
-            <li>✨ Чистота пор: {100 - Math.round(aiResults.pore)}%</li>
-            <li>🌸 Відсутність акне: {100 - Math.round(aiResults.acne)}%</li>
-            <li>🧬 Текстура: {100 - Math.round(aiResults.texture)}%</li>
+            <li>💧 Здоров'я шкіри: {100 - Math.round(aiResults.skin.health || 0)}%</li>
+            <li>✨ Чистота пор: {100 - Math.round(aiResults.skin.pore || 0)}%</li>
+            <li>🌸 Відсутність акне: {100 - Math.round(aiResults.skin.acne || 0)}%</li>
+            <li>🧬 Текстура: {100 - Math.round(aiResults.skin.texture || 0)}%</li>
           </ul>
           <button onClick={() => window.location.href = 'https://ekokrasa.com.ua'} style={btnStyle}>Підібрати догляд</button>
         </div>
@@ -134,7 +120,5 @@ const btnStyle = {
 
 const snapBtnStyle = {
   position: "absolute", bottom: "20px", left: "50%", transform: "translateX(-50%)",
-  padding: "12px 25px", background: "#fff", border: "none", borderRadius: "30px", fontWeight: "bold", cursor: "pointer", boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
+  padding: "12px 25px", background: "#fff", border: "none", borderRadius: "30px", fontWeight: "bold", cursor: "pointer"
 };
-
-const centerStyle = { textAlign: "center", marginTop: "100px", fontFamily: "sans-serif" };
