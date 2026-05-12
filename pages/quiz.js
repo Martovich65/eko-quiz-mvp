@@ -11,6 +11,7 @@ export default function Quiz() {
   // 1. Запуск камеры
   const startCamera = async () => {
     setStep(1);
+
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'user' },
     });
@@ -23,12 +24,15 @@ export default function Quiz() {
   // 2. Сделать фото
   const takePhoto = () => {
     const canvas = document.createElement('canvas');
+
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
 
-    canvas
-      .getContext('2d')
-      .drawImage(videoRef.current, 0, 0);
+    canvas.getContext('2d').drawImage(
+      videoRef.current,
+      0,
+      0
+    );
 
     setPhoto(canvas.toDataURL('image/jpeg'));
 
@@ -56,16 +60,16 @@ export default function Quiz() {
       const data = await res.json();
 
       setAiResults(data.details);
-      setStep(2); // Переходим к анкете
+      setStep(2); // Первый вопрос анкеты
     } catch (e) {
-      // Даже если произошла ошибка — продолжаем
+      // Даже при ошибке продолжаем
       setStep(2);
     } finally {
       setLoading(false);
     }
   };
 
-  // Сохранение ответа на вопрос
+  // Сохранение ответа
   const saveAnswer = (key, value) => {
     setAnswers((prev) => ({
       ...prev,
@@ -73,10 +77,16 @@ export default function Quiz() {
     }));
   };
 
-  // Выбор типа кожи
+  // Крок 1: Тип кожи
   const selectSkinType = (value) => {
     saveAnswer('skinType', value);
-    alert('Обраний тип шкіри: ' + value);
+    setStep(3);
+  };
+
+  // Крок 2: Главная проблема
+  const selectMainProblem = (value) => {
+    saveAnswer('mainProblem', value);
+    setStep(4);
   };
 
   return (
@@ -170,7 +180,7 @@ export default function Quiz() {
         </div>
       )}
 
-      {/* Шаг 1 анкеты */}
+      {/* Крок 1 із 9 */}
       {step === 2 && (
         <div>
           <h2>Крок 1 із 9</h2>
@@ -193,20 +203,131 @@ export default function Quiz() {
               Суха
             </button>
 
-            <button onClick={() => selectSkinType('Комбінована')}>
+            <button
+              onClick={() =>
+                selectSkinType('Комбінована')
+              }
+            >
               Комбінована
             </button>
 
-            <button onClick={() => selectSkinType('Нормальна')}>
+            <button
+              onClick={() =>
+                selectSkinType('Нормальна')
+              }
+            >
               Нормальна
             </button>
           </div>
+        </div>
+      )}
 
-          {answers.skinType && (
-            <p>
-              Обрано: <strong>{answers.skinType}</strong>
-            </p>
-          )}
+      {/* Крок 2 із 9 */}
+      {step === 3 && (
+        <div>
+          <h2>Крок 2 із 9</h2>
+          <h3>Яка ваша головна проблема?</h3>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              maxWidth: '320px',
+              margin: '20px auto',
+            }}
+          >
+            <button
+              onClick={() =>
+                selectMainProblem('Акне / Висипання')
+              }
+            >
+              Акне / Висипання
+            </button>
+
+            <button
+              onClick={() =>
+                selectMainProblem('Постакне')
+              }
+            >
+              Постакне
+            </button>
+
+            <button
+              onClick={() =>
+                selectMainProblem('Розширені пори')
+              }
+            >
+              Розширені пори
+            </button>
+
+            <button
+              onClick={() =>
+                selectMainProblem('Купероз')
+              }
+            >
+              Купероз
+            </button>
+
+            <button
+              onClick={() =>
+                selectMainProblem('Зморшки')
+              }
+            >
+              Зморшки
+            </button>
+
+            <button
+              onClick={() =>
+                selectMainProblem('Чутливість')
+              }
+            >
+              Чутливість
+            </button>
+
+            <button
+              onClick={() =>
+                selectMainProblem('Пігментація')
+              }
+            >
+              Пігментація
+            </button>
+
+            <button
+              onClick={() =>
+                selectMainProblem('Набряки')
+              }
+            >
+              Набряки
+            </button>
+
+            <button
+              onClick={() =>
+                selectMainProblem('Тьмяний колір')
+              }
+            >
+              Тьмяний колір
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Временный экран проверки */}
+      {step === 4 && (
+        <div>
+          <h2>Відповіді збережено ✅</h2>
+
+          <p>
+            <strong>Тип шкіри:</strong>{' '}
+            {answers.skinType}
+          </p>
+
+          <p>
+            <strong>Головна проблема:</strong>{' '}
+            {answers.mainProblem}
+          </p>
+
+          <p>Далі буде Крок 3 із 9.</p>
         </div>
       )}
     </div>
