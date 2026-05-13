@@ -77,16 +77,22 @@ export default function Quiz() {
     }));
   };
 
-  // Крок 1: Тип кожи
+  // Крок 1: Тип шкіри
   const selectSkinType = (value) => {
     saveAnswer('skinType', value);
     setStep(3);
   };
 
-  // Крок 2: Главная проблема
+  // Крок 2: Головна проблема
   const selectMainProblem = (value) => {
     saveAnswer('mainProblem', value);
     setStep(4);
+  };
+
+  // Крок 3: Реакція на воду
+  const selectWaterReaction = (value) => {
+    saveAnswer('waterReaction', value);
+    setStep(5);
   };
 
   return (
@@ -203,19 +209,11 @@ export default function Quiz() {
               Суха
             </button>
 
-            <button
-              onClick={() =>
-                selectSkinType('Комбінована')
-              }
-            >
+            <button onClick={() => selectSkinType('Комбінована')}>
               Комбінована
             </button>
 
-            <button
-              onClick={() =>
-                selectSkinType('Нормальна')
-              }
-            >
+            <button onClick={() => selectSkinType('Нормальна')}>
               Нормальна
             </button>
           </div>
@@ -237,97 +235,97 @@ export default function Quiz() {
               margin: '20px auto',
             }}
           >
-            <button
-              onClick={() =>
-                selectMainProblem('Акне / Висипання')
-              }
-            >
+            <button onClick={() => selectMainProblem('Акне / Висипання')}>
               Акне / Висипання
             </button>
 
-            <button
-              onClick={() =>
-                selectMainProblem('Постакне')
-              }
-            >
+            <button onClick={() => selectMainProblem('Постакне')}>
               Постакне
             </button>
 
-            <button
-              onClick={() =>
-                selectMainProblem('Розширені пори')
-              }
-            >
+            <button onClick={() => selectMainProblem('Розширені пори')}>
               Розширені пори
             </button>
 
-            <button
-              onClick={() =>
-                selectMainProblem('Купероз')
-              }
-            >
+            <button onClick={() => selectMainProblem('Купероз')}>
               Купероз
             </button>
 
-            <button
-              onClick={() =>
-                selectMainProblem('Зморшки')
-              }
-            >
+            <button onClick={() => selectMainProblem('Зморшки')}>
               Зморшки
             </button>
 
-            <button
-              onClick={() =>
-                selectMainProblem('Чутливість')
-              }
-            >
+            <button onClick={() => selectMainProblem('Чутливість')}>
               Чутливість
             </button>
 
-            <button
-              onClick={() =>
-                selectMainProblem('Пігментація')
-              }
-            >
+            <button onClick={() => selectMainProblem('Пігментація')}>
               Пігментація
             </button>
 
-            <button
-              onClick={() =>
-                selectMainProblem('Набряки')
-              }
-            >
+            <button onClick={() => selectMainProblem('Набряки')}>
               Набряки
             </button>
 
-            <button
-              onClick={() =>
-                selectMainProblem('Тьмяний колір')
-              }
-            >
+            <button onClick={() => selectMainProblem('Тьмяний колір')}>
               Тьмяний колір
             </button>
           </div>
         </div>
       )}
 
-      {/* Временный экран проверки */}
+      {/* Крок 3 із 9 */}
       {step === 4 && (
+        <div>
+          <h2>Крок 3 із 9</h2>
+          <h3>Як шкіра реагує на воду?</h3>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              maxWidth: '320px',
+              margin: '20px auto',
+            }}
+          >
+            <button onClick={() => selectWaterReaction('Стягнутість')}>
+              Стягнутість
+            </button>
+
+            <button onClick={() => selectWaterReaction('Почервоніння')}>
+              Почервоніння
+            </button>
+
+            <button onClick={() => selectWaterReaction('Жирний блиск')}>
+              Жирний блиск
+            </button>
+
+            <button onClick={() => selectWaterReaction('Норма')}>
+              Норма
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Временный экран проверки */}
+      {step === 5 && (
         <div>
           <h2>Відповіді збережено ✅</h2>
 
           <p>
-            <strong>Тип шкіри:</strong>{' '}
-            {answers.skinType}
+            <strong>Тип шкіри:</strong> {answers.skinType}
           </p>
 
           <p>
-            <strong>Головна проблема:</strong>{' '}
-            {answers.mainProblem}
+            <strong>Головна проблема:</strong> {answers.mainProblem}
           </p>
 
-          <p>Далі буде Крок 3 із 9.</p>
+          <p>
+            <strong>Реакція на воду:</strong> {answers.waterReaction}
+          </p>
+
+          <p>Далі буде Крок 4 із 9.</p>
         </div>
       )}
     </div>
