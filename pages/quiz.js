@@ -12,6 +12,8 @@ const [phoneInput, setPhoneInput] = useState('');
 
 const videoRef = useRef(null);
 
+// ---------- Camera ----------
+
 const startCamera = async () => {
 try {
 setStep(1);
@@ -42,7 +44,8 @@ canvas.height = videoRef.current.videoHeight;
 const context = canvas.getContext('2d');
 context.drawImage(videoRef.current, 0, 0);
 
-setPhoto(canvas.toDataURL('image/jpeg', 0.8));
+const imageData = canvas.toDataURL('image/jpeg', 0.8);
+setPhoto(imageData);
 
 const stream = videoRef.current.srcObject;
 if (stream) {
@@ -51,6 +54,13 @@ if (stream) {
 ```
 
 };
+
+const retakePhoto = () => {
+setPhoto(null);
+startCamera();
+};
+
+// ---------- Analysis ----------
 
 const runAnalysis = async () => {
 setLoading(true);
@@ -65,7 +75,7 @@ try {
     body: JSON.stringify({ image: photo }),
   });
 
-  await res.json(); // Silent fallback is handled in API
+  await res.json(); // API already handles fallback
   setStep(2);
 } catch (error) {
   console.error('Analyze error:', error);
@@ -76,6 +86,8 @@ try {
 ```
 
 };
+
+// ---------- Helpers ----------
 
 const saveAnswer = (key, value) => {
 setAnswers((prev) => ({
@@ -150,6 +162,8 @@ setStep(11);
 
 };
 
+// ---------- Styles ----------
+
 const buttonGroupStyle = {
 display: 'flex',
 flexDirection: 'column',
@@ -168,6 +182,8 @@ border: '1px solid #ccc',
 boxSizing: 'border-box',
 };
 
+// ---------- Render ----------
+
 return (
 <div
 style={{
@@ -177,20 +193,17 @@ fontFamily: 'sans-serif',
 }}
 >
 {step === 0 && ( <div> <h1>Еко краса AI: Аналіз шкіри</h1>
+<button
+onClick={startCamera}
+style={{
+padding: '15px 30px',
+fontSize: '18px',
+}}
+>
+Почати тест </button> </div>
+)}
 
 ```
-      <button
-        onClick={startCamera}
-        style={{
-          padding: '15px 30px',
-          fontSize: '18px',
-        }}
-      >
-        Почати тест
-      </button>
-    </div>
-  )}
-
   {step === 1 && (
     <div>
       {!photo ? (
@@ -241,7 +254,7 @@ fontFamily: 'sans-serif',
           </button>
 
           <button
-            onClick={() => setPhoto(null)}
+            onClick={retakePhoto}
             style={{ marginLeft: '10px' }}
           >
             Перезняти
@@ -257,12 +270,8 @@ fontFamily: 'sans-serif',
       <h3>Який у вас тип шкіри?</h3>
 
       <div style={buttonGroupStyle}>
-        <button onClick={() => selectSkinType('Жирна')}>
-          Жирна
-        </button>
-        <button onClick={() => selectSkinType('Суха')}>
-          Суха
-        </button>
+        <button onClick={() => selectSkinType('Жирна')}>Жирна</button>
+        <button onClick={() => selectSkinType('Суха')}>Суха</button>
         <button onClick={() => selectSkinType('Комбінована')}>
           Комбінована
         </button>
@@ -371,12 +380,8 @@ fontFamily: 'sans-serif',
       <h3>Чи є у вас алергії?</h3>
 
       <div style={buttonGroupStyle}>
-        <button onClick={() => selectAllergies('Так')}>
-          Так
-        </button>
-        <button onClick={() => selectAllergies('Ні')}>
-          Ні
-        </button>
+        <button onClick={() => selectAllergies('Так')}>Так</button>
+        <button onClick={() => selectAllergies('Ні')}>Ні</button>
       </div>
     </div>
   )}
@@ -396,10 +401,7 @@ fontFamily: 'sans-serif',
 
       <br />
 
-      <button
-        onClick={saveName}
-        disabled={!nameInput.trim()}
-      >
+      <button onClick={saveName} disabled={!nameInput.trim()}>
         Далі
       </button>
     </div>
@@ -420,10 +422,7 @@ fontFamily: 'sans-serif',
 
       <br />
 
-      <button
-        onClick={saveEmail}
-        disabled={!isEmailValid}
-      >
+      <button onClick={saveEmail} disabled={!isEmailValid}>
         Далі
       </button>
     </div>
@@ -444,10 +443,7 @@ fontFamily: 'sans-serif',
 
       <br />
 
-      <button
-        onClick={savePhone}
-        disabled={!phoneInput.trim()}
-      >
+      <button onClick={savePhone} disabled={!phoneInput.trim()}>
         Завершити тест
       </button>
     </div>
