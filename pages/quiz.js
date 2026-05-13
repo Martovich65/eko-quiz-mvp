@@ -15,11 +15,12 @@ const videoRef = useRef(null);
 const startCamera = async () => {
 try {
 setStep(1);
-const stream = await navigator.mediaDevices.getUserMedia({
-video: { facingMode: 'user' },
-});
 
 ```
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: { facingMode: 'user' },
+  });
+
   if (videoRef.current) {
     videoRef.current.srcObject = stream;
   }
@@ -64,7 +65,7 @@ try {
     body: JSON.stringify({ image: photo }),
   });
 
-  await res.json(); // silent fallback already handled in API
+  await res.json(); // Silent fallback is handled in API
   setStep(2);
 } catch (error) {
   console.error('Analyze error:', error);
@@ -176,14 +177,20 @@ fontFamily: 'sans-serif',
 }}
 >
 {step === 0 && ( <div> <h1>Еко краса AI: Аналіз шкіри</h1>
-<button
-onClick={startCamera}
-style={{ padding: '15px 30px', fontSize: '18px' }}
->
-Почати тест </button> </div>
-)}
 
 ```
+      <button
+        onClick={startCamera}
+        style={{
+          padding: '15px 30px',
+          fontSize: '18px',
+        }}
+      >
+        Почати тест
+      </button>
+    </div>
+  )}
+
   {step === 1 && (
     <div>
       {!photo ? (
@@ -199,8 +206,13 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
               borderRadius: '10px',
             }}
           />
+
           <br />
-          <button onClick={takePhoto} style={{ marginTop: '10px' }}>
+
+          <button
+            onClick={takePhoto}
+            style={{ marginTop: '10px' }}
+          >
             Зробити фото
           </button>
         </>
@@ -215,14 +227,19 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
               borderRadius: '10px',
             }}
           />
+
           <br />
+
           <button
             onClick={runAnalysis}
             disabled={loading}
             style={{ marginTop: '10px' }}
           >
-            {loading ? 'Аналізуємо...' : 'Підтвердити та аналізувати'}
+            {loading
+              ? 'Аналізуємо...'
+              : 'Підтвердити та аналізувати'}
           </button>
+
           <button
             onClick={() => setPhoto(null)}
             style={{ marginLeft: '10px' }}
@@ -238,11 +255,20 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
     <div>
       <h2>Крок 1 із 9</h2>
       <h3>Який у вас тип шкіри?</h3>
+
       <div style={buttonGroupStyle}>
-        <button onClick={() => selectSkinType('Жирна')}>Жирна</button>
-        <button onClick={() => selectSkinType('Суха')}>Суха</button>
-        <button onClick={() => selectSkinType('Комбінована')}>Комбінована</button>
-        <button onClick={() => selectSkinType('Нормальна')}>Нормальна</button>
+        <button onClick={() => selectSkinType('Жирна')}>
+          Жирна
+        </button>
+        <button onClick={() => selectSkinType('Суха')}>
+          Суха
+        </button>
+        <button onClick={() => selectSkinType('Комбінована')}>
+          Комбінована
+        </button>
+        <button onClick={() => selectSkinType('Нормальна')}>
+          Нормальна
+        </button>
       </div>
     </div>
   )}
@@ -251,16 +277,35 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
     <div>
       <h2>Крок 2 із 9</h2>
       <h3>Яка ваша головна проблема?</h3>
+
       <div style={buttonGroupStyle}>
-        <button onClick={() => selectMainProblem('Акне / Висипання')}>Акне / Висипання</button>
-        <button onClick={() => selectMainProblem('Постакне')}>Постакне</button>
-        <button onClick={() => selectMainProblem('Розширені пори')}>Розширені пори</button>
-        <button onClick={() => selectMainProblem('Купероз')}>Купероз</button>
-        <button onClick={() => selectMainProblem('Зморшки')}>Зморшки</button>
-        <button onClick={() => selectMainProblem('Чутливість')}>Чутливість</button>
-        <button onClick={() => selectMainProblem('Пігментація')}>Пігментація</button>
-        <button onClick={() => selectMainProblem('Набряки')}>Набряки</button>
-        <button onClick={() => selectMainProblem('Тьмяний колір')}>Тьмяний колір</button>
+        <button onClick={() => selectMainProblem('Акне / Висипання')}>
+          Акне / Висипання
+        </button>
+        <button onClick={() => selectMainProblem('Постакне')}>
+          Постакне
+        </button>
+        <button onClick={() => selectMainProblem('Розширені пори')}>
+          Розширені пори
+        </button>
+        <button onClick={() => selectMainProblem('Купероз')}>
+          Купероз
+        </button>
+        <button onClick={() => selectMainProblem('Зморшки')}>
+          Зморшки
+        </button>
+        <button onClick={() => selectMainProblem('Чутливість')}>
+          Чутливість
+        </button>
+        <button onClick={() => selectMainProblem('Пігментація')}>
+          Пігментація
+        </button>
+        <button onClick={() => selectMainProblem('Набряки')}>
+          Набряки
+        </button>
+        <button onClick={() => selectMainProblem('Тьмяний колір')}>
+          Тьмяний колір
+        </button>
       </div>
     </div>
   )}
@@ -269,11 +314,20 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
     <div>
       <h2>Крок 3 із 9</h2>
       <h3>Як шкіра реагує на воду?</h3>
+
       <div style={buttonGroupStyle}>
-        <button onClick={() => selectWaterReaction('Стягнутість')}>Стягнутість</button>
-        <button onClick={() => selectWaterReaction('Почервоніння')}>Почервоніння</button>
-        <button onClick={() => selectWaterReaction('Жирний блиск')}>Жирний блиск</button>
-        <button onClick={() => selectWaterReaction('Норма')}>Норма</button>
+        <button onClick={() => selectWaterReaction('Стягнутість')}>
+          Стягнутість
+        </button>
+        <button onClick={() => selectWaterReaction('Почервоніння')}>
+          Почервоніння
+        </button>
+        <button onClick={() => selectWaterReaction('Жирний блиск')}>
+          Жирний блиск
+        </button>
+        <button onClick={() => selectWaterReaction('Норма')}>
+          Норма
+        </button>
       </div>
     </div>
   )}
@@ -282,10 +336,17 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
     <div>
       <h2>Крок 4 із 9</h2>
       <h3>Який результат ви хочете отримати?</h3>
+
       <div style={buttonGroupStyle}>
-        <button onClick={() => selectDesiredResult('Сяйво')}>Сяйво</button>
-        <button onClick={() => selectDesiredResult('Чиста шкіра')}>Чиста шкіра</button>
-        <button onClick={() => selectDesiredResult('Омолодження')}>Омолодження</button>
+        <button onClick={() => selectDesiredResult('Сяйво')}>
+          Сяйво
+        </button>
+        <button onClick={() => selectDesiredResult('Чиста шкіра')}>
+          Чиста шкіра
+        </button>
+        <button onClick={() => selectDesiredResult('Омолодження')}>
+          Омолодження
+        </button>
       </div>
     </div>
   )}
@@ -294,6 +355,7 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
     <div>
       <h2>Крок 5 із 9</h2>
       <h3>Оберіть вашу вікову категорію</h3>
+
       <div style={buttonGroupStyle}>
         <button onClick={() => selectAge('до 25')}>до 25</button>
         <button onClick={() => selectAge('25-35')}>25-35</button>
@@ -307,9 +369,14 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
     <div>
       <h2>Крок 6 із 9</h2>
       <h3>Чи є у вас алергії?</h3>
+
       <div style={buttonGroupStyle}>
-        <button onClick={() => selectAllergies('Так')}>Так</button>
-        <button onClick={() => selectAllergies('Ні')}>Ні</button>
+        <button onClick={() => selectAllergies('Так')}>
+          Так
+        </button>
+        <button onClick={() => selectAllergies('Ні')}>
+          Ні
+        </button>
       </div>
     </div>
   )}
@@ -318,6 +385,7 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
     <div>
       <h2>Крок 7 із 9</h2>
       <h3>Введіть ваше ім'я</h3>
+
       <input
         type="text"
         value={nameInput}
@@ -325,8 +393,13 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
         placeholder="Ваше ім'я"
         style={inputStyle}
       />
+
       <br />
-      <button onClick={saveName} disabled={!nameInput.trim()}>
+
+      <button
+        onClick={saveName}
+        disabled={!nameInput.trim()}
+      >
         Далі
       </button>
     </div>
@@ -336,6 +409,7 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
     <div>
       <h2>Крок 8 із 9</h2>
       <h3>Введіть ваш E-mail</h3>
+
       <input
         type="email"
         value={emailInput}
@@ -343,8 +417,13 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
         placeholder="example@email.com"
         style={inputStyle}
       />
+
       <br />
-      <button onClick={saveEmail} disabled={!isEmailValid}>
+
+      <button
+        onClick={saveEmail}
+        disabled={!isEmailValid}
+      >
         Далі
       </button>
     </div>
@@ -354,6 +433,7 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
     <div>
       <h2>Крок 9 із 9</h2>
       <h3>Введіть номер телефону</h3>
+
       <input
         type="tel"
         value={phoneInput}
@@ -361,8 +441,13 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
         placeholder="+380XXXXXXXXX"
         style={inputStyle}
       />
+
       <br />
-      <button onClick={savePhone} disabled={!phoneInput.trim()}>
+
+      <button
+        onClick={savePhone}
+        disabled={!phoneInput.trim()}
+      >
         Завершити тест
       </button>
     </div>
@@ -371,6 +456,7 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
   {step === 11 && (
     <div>
       <h2>Анкету успішно заповнено ✅</h2>
+
       <p><strong>Тип шкіри:</strong> {answers.skinType}</p>
       <p><strong>Головна проблема:</strong> {answers.mainProblem}</p>
       <p><strong>Реакція на воду:</strong> {answers.waterReaction}</p>
@@ -380,6 +466,7 @@ style={{ padding: '15px 30px', fontSize: '18px' }}
       <p><strong>Ім'я:</strong> {answers.name}</p>
       <p><strong>E-mail:</strong> {answers.email}</p>
       <p><strong>Телефон:</strong> {answers.phone}</p>
+
       <p>🎉 Усі 9 кроків завершено.</p>
     </div>
   )}
