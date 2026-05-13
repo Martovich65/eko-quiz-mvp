@@ -64,7 +64,7 @@ try {
     body: JSON.stringify({ image: photo }),
   });
 
-  await res.json();
+  await res.json(); // silent fallback already handled in API
   setStep(2);
 } catch (error) {
   console.error('Analyze error:', error);
