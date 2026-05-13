@@ -60,9 +60,8 @@ export default function Quiz() {
       const data = await res.json();
 
       setAiResults(data.details);
-      setStep(2); // Первый вопрос анкеты
+      setStep(2);
     } catch (e) {
-      // Даже при ошибке продолжаем
       setStep(2);
     } finally {
       setLoading(false);
@@ -93,6 +92,12 @@ export default function Quiz() {
   const selectWaterReaction = (value) => {
     saveAnswer('waterReaction', value);
     setStep(5);
+  };
+
+  // Крок 4: Бажаний результат
+  const selectDesiredResult = (value) => {
+    saveAnswer('desiredResult', value);
+    setStep(6);
   };
 
   return (
@@ -192,30 +197,11 @@ export default function Quiz() {
           <h2>Крок 1 із 9</h2>
           <h3>Який у вас тип шкіри?</h3>
 
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              maxWidth: '300px',
-              margin: '20px auto',
-            }}
-          >
-            <button onClick={() => selectSkinType('Жирна')}>
-              Жирна
-            </button>
-
-            <button onClick={() => selectSkinType('Суха')}>
-              Суха
-            </button>
-
-            <button onClick={() => selectSkinType('Комбінована')}>
-              Комбінована
-            </button>
-
-            <button onClick={() => selectSkinType('Нормальна')}>
-              Нормальна
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '300px', margin: '20px auto' }}>
+            <button onClick={() => selectSkinType('Жирна')}>Жирна</button>
+            <button onClick={() => selectSkinType('Суха')}>Суха</button>
+            <button onClick={() => selectSkinType('Комбінована')}>Комбінована</button>
+            <button onClick={() => selectSkinType('Нормальна')}>Нормальна</button>
           </div>
         </div>
       )}
@@ -226,50 +212,16 @@ export default function Quiz() {
           <h2>Крок 2 із 9</h2>
           <h3>Яка ваша головна проблема?</h3>
 
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              maxWidth: '320px',
-              margin: '20px auto',
-            }}
-          >
-            <button onClick={() => selectMainProblem('Акне / Висипання')}>
-              Акне / Висипання
-            </button>
-
-            <button onClick={() => selectMainProblem('Постакне')}>
-              Постакне
-            </button>
-
-            <button onClick={() => selectMainProblem('Розширені пори')}>
-              Розширені пори
-            </button>
-
-            <button onClick={() => selectMainProblem('Купероз')}>
-              Купероз
-            </button>
-
-            <button onClick={() => selectMainProblem('Зморшки')}>
-              Зморшки
-            </button>
-
-            <button onClick={() => selectMainProblem('Чутливість')}>
-              Чутливість
-            </button>
-
-            <button onClick={() => selectMainProblem('Пігментація')}>
-              Пігментація
-            </button>
-
-            <button onClick={() => selectMainProblem('Набряки')}>
-              Набряки
-            </button>
-
-            <button onClick={() => selectMainProblem('Тьмяний колір')}>
-              Тьмяний колір
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
+            <button onClick={() => selectMainProblem('Акне / Висипання')}>Акне / Висипання</button>
+            <button onClick={() => selectMainProblem('Постакне')}>Постакне</button>
+            <button onClick={() => selectMainProblem('Розширені пори')}>Розширені пори</button>
+            <button onClick={() => selectMainProblem('Купероз')}>Купероз</button>
+            <button onClick={() => selectMainProblem('Зморшки')}>Зморшки</button>
+            <button onClick={() => selectMainProblem('Чутливість')}>Чутливість</button>
+            <button onClick={() => selectMainProblem('Пігментація')}>Пігментація</button>
+            <button onClick={() => selectMainProblem('Набряки')}>Набряки</button>
+            <button onClick={() => selectMainProblem('Тьмяний колір')}>Тьмяний колір</button>
           </div>
         </div>
       )}
@@ -280,52 +232,40 @@ export default function Quiz() {
           <h2>Крок 3 із 9</h2>
           <h3>Як шкіра реагує на воду?</h3>
 
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              maxWidth: '320px',
-              margin: '20px auto',
-            }}
-          >
-            <button onClick={() => selectWaterReaction('Стягнутість')}>
-              Стягнутість
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
+            <button onClick={() => selectWaterReaction('Стягнутість')}>Стягнутість</button>
+            <button onClick={() => selectWaterReaction('Почервоніння')}>Почервоніння</button>
+            <button onClick={() => selectWaterReaction('Жирний блиск')}>Жирний блиск</button>
+            <button onClick={() => selectWaterReaction('Норма')}>Норма</button>
+          </div>
+        </div>
+      )}
 
-            <button onClick={() => selectWaterReaction('Почервоніння')}>
-              Почервоніння
-            </button>
+      {/* Крок 4 із 9 */}
+      {step === 5 && (
+        <div>
+          <h2>Крок 4 із 9</h2>
+          <h3>Який результат ви хочете отримати?</h3>
 
-            <button onClick={() => selectWaterReaction('Жирний блиск')}>
-              Жирний блиск
-            </button>
-
-            <button onClick={() => selectWaterReaction('Норма')}>
-              Норма
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
+            <button onClick={() => selectDesiredResult('Сяйво')}>Сяйво</button>
+            <button onClick={() => selectDesiredResult('Чиста шкіра')}>Чиста шкіра</button>
+            <button onClick={() => selectDesiredResult('Омолодження')}>Омолодження</button>
           </div>
         </div>
       )}
 
       {/* Временный экран проверки */}
-      {step === 5 && (
+      {step === 6 && (
         <div>
           <h2>Відповіді збережено ✅</h2>
 
-          <p>
-            <strong>Тип шкіри:</strong> {answers.skinType}
-          </p>
+          <p><strong>Тип шкіри:</strong> {answers.skinType}</p>
+          <p><strong>Головна проблема:</strong> {answers.mainProblem}</p>
+          <p><strong>Реакція на воду:</strong> {answers.waterReaction}</p>
+          <p><strong>Бажаний результат:</strong> {answers.desiredResult}</p>
 
-          <p>
-            <strong>Головна проблема:</strong> {answers.mainProblem}
-          </p>
-
-          <p>
-            <strong>Реакція на воду:</strong> {answers.waterReaction}
-          </p>
-
-          <p>Далі буде Крок 4 із 9.</p>
+          <p>Далі буде Крок 5 із 9.</p>
         </div>
       )}
     </div>
