@@ -28,11 +28,7 @@ export default function Quiz() {
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
 
-    canvas.getContext('2d').drawImage(
-      videoRef.current,
-      0,
-      0
-    );
+    canvas.getContext('2d').drawImage(videoRef.current, 0, 0);
 
     setPhoto(canvas.toDataURL('image/jpeg'));
 
@@ -98,6 +94,12 @@ export default function Quiz() {
   const selectDesiredResult = (value) => {
     saveAnswer('desiredResult', value);
     setStep(6);
+  };
+
+  // Крок 5: Вік
+  const selectAge = (value) => {
+    saveAnswer('age', value);
+    setStep(7);
   };
 
   return (
@@ -255,8 +257,23 @@ export default function Quiz() {
         </div>
       )}
 
-      {/* Временный экран проверки */}
+      {/* Крок 5 із 9 */}
       {step === 6 && (
+        <div>
+          <h2>Крок 5 із 9</h2>
+          <h3>Оберіть вашу вікову категорію</h3>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
+            <button onClick={() => selectAge('до 25')}>до 25</button>
+            <button onClick={() => selectAge('25-35')}>25-35</button>
+            <button onClick={() => selectAge('35-45')}>35-45</button>
+            <button onClick={() => selectAge('45+')}>45+</button>
+          </div>
+        </div>
+      )}
+
+      {/* Временный экран проверки */}
+      {step === 7 && (
         <div>
           <h2>Відповіді збережено ✅</h2>
 
@@ -264,8 +281,9 @@ export default function Quiz() {
           <p><strong>Головна проблема:</strong> {answers.mainProblem}</p>
           <p><strong>Реакція на воду:</strong> {answers.waterReaction}</p>
           <p><strong>Бажаний результат:</strong> {answers.desiredResult}</p>
+          <p><strong>Вік:</strong> {answers.age}</p>
 
-          <p>Далі буде Крок 5 із 9.</p>
+          <p>Далі буде Крок 6 із 9.</p>
         </div>
       )}
     </div>
