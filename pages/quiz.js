@@ -7,6 +7,7 @@ export default function Quiz() {
   const [aiResults, setAiResults] = useState(null);
   const [answers, setAnswers] = useState({});
   const [nameInput, setNameInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
   const videoRef = useRef(null);
 
   // Запуск камеры
@@ -112,11 +113,29 @@ export default function Quiz() {
 
   // Крок 7
   const saveName = () => {
-    if (!nameInput.trim()) return;
+    const name = nameInput.trim();
 
-    saveAnswer('name', nameInput.trim());
+    if (!name) return;
+
+    saveAnswer('name', name);
     setStep(9);
   };
+
+  // Крок 8
+  const saveEmail = () => {
+    const email = emailInput.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) return;
+
+    saveAnswer('email', email);
+    setStep(10);
+  };
+
+  // Проверка email для активации кнопки
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+    emailInput.trim()
+  );
 
   return (
     <div
@@ -208,6 +227,7 @@ export default function Quiz() {
         <div>
           <h2>Крок 1 із 9</h2>
           <h3>Який у вас тип шкіри?</h3>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '300px', margin: '20px auto' }}>
             <button onClick={() => selectSkinType('Жирна')}>Жирна</button>
             <button onClick={() => selectSkinType('Суха')}>Суха</button>
@@ -222,6 +242,7 @@ export default function Quiz() {
         <div>
           <h2>Крок 2 із 9</h2>
           <h3>Яка ваша головна проблема?</h3>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
             <button onClick={() => selectMainProblem('Акне / Висипання')}>Акне / Висипання</button>
             <button onClick={() => selectMainProblem('Постакне')}>Постакне</button>
@@ -241,6 +262,7 @@ export default function Quiz() {
         <div>
           <h2>Крок 3 із 9</h2>
           <h3>Як шкіра реагує на воду?</h3>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
             <button onClick={() => selectWaterReaction('Стягнутість')}>Стягнутість</button>
             <button onClick={() => selectWaterReaction('Почервоніння')}>Почервоніння</button>
@@ -255,6 +277,7 @@ export default function Quiz() {
         <div>
           <h2>Крок 4 із 9</h2>
           <h3>Який результат ви хочете отримати?</h3>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
             <button onClick={() => selectDesiredResult('Сяйво')}>Сяйво</button>
             <button onClick={() => selectDesiredResult('Чиста шкіра')}>Чиста шкіра</button>
@@ -268,6 +291,7 @@ export default function Quiz() {
         <div>
           <h2>Крок 5 із 9</h2>
           <h3>Оберіть вашу вікову категорію</h3>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
             <button onClick={() => selectAge('до 25')}>до 25</button>
             <button onClick={() => selectAge('25-35')}>25-35</button>
@@ -282,6 +306,7 @@ export default function Quiz() {
         <div>
           <h2>Крок 6 із 9</h2>
           <h3>Чи є у вас алергії?</h3>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
             <button onClick={() => selectAllergies('Так')}>Так</button>
             <button onClick={() => selectAllergies('Ні')}>Ні</button>
@@ -321,8 +346,40 @@ export default function Quiz() {
         </div>
       )}
 
-      {/* Экран проверки */}
+      {/* Крок 8 */}
       {step === 9 && (
+        <div>
+          <h2>Крок 8 із 9</h2>
+          <h3>Введіть ваш E-mail</h3>
+
+          <input
+            type="email"
+            value={emailInput}
+            onChange={(e) => setEmailInput(e.target.value)}
+            placeholder="example@email.com"
+            style={{
+              padding: '12px',
+              width: '100%',
+              maxWidth: '320px',
+              marginBottom: '10px',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+            }}
+          />
+
+          <br />
+
+          <button
+            onClick={saveEmail}
+            disabled={!isEmailValid}
+          >
+            Далі
+          </button>
+        </div>
+      )}
+
+      {/* Экран проверки */}
+      {step === 10 && (
         <div>
           <h2>Відповіді збережено ✅</h2>
 
@@ -333,8 +390,9 @@ export default function Quiz() {
           <p><strong>Вік:</strong> {answers.age}</p>
           <p><strong>Алергії:</strong> {answers.hasAllergies}</p>
           <p><strong>Ім'я:</strong> {answers.name}</p>
+          <p><strong>E-mail:</strong> {answers.email}</p>
 
-          <p>Далі буде Крок 8 із 9.</p>
+          <p>Далі буде Крок 9 із 9.</p>
         </div>
       )}
     </div>
