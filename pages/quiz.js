@@ -15,7 +15,8 @@ export default function Quiz() {
   const [step, setStep] = useState(0);
   const [photo, setPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [aiResults, setAiResults] = useState(null);
+  const [analysisToken, setAnalysisToken] = useState(null);
+  const [resultStatus, setResultStatus] = useState('idle');
   const [answers, setAnswers] = useState({});
   const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
@@ -70,7 +71,7 @@ export default function Quiz() {
 
       const data = await res.json();
 
-      setAiResults(data.details);
+      setAnalysisToken(res.ok && data.success ? data.analysisToken ?? null : null);
       setStep(2);
     } catch (e) {
       // Даже при ошибке продолжаем
@@ -133,6 +134,23 @@ export default function Quiz() {
   );
 
   const canContinue = Boolean(nameInput.trim() && isEmailValid && phone);
+
+  const openResult = async () => {
+    setResultStatus('loading');
+    try {
+      const { skinType, mainProblem, desiredResult } = answers;
+      const response = await fetch('/api/quiz/result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysisToken, skinType, mainProblem, desiredResult }),
+      });
+      if (!response.ok) throw new Error('Result unavailable');
+      const { url } = await response.json();
+      window.location.assign(url);
+    } catch {
+      setResultStatus('error');
+    }
+  };
 
   const saveContact = () => {
     if (!canContinue) return;
@@ -420,7 +438,8 @@ export default function Quiz() {
 
           <button
             type="button"
-            onClick={() => setStep(10)}
+            onClick={openResult}
+            disabled={resultStatus === 'loading'}
             style={{
               width: '100%',
               maxWidth: '360px',
@@ -436,14 +455,9 @@ export default function Quiz() {
               cursor: 'pointer',
             }}
           >
-            Підтвердити відповіді
+            {resultStatus === 'loading' ? 'Готуємо результат…' : 'Підтвердити й побачити результат'}
           </button>
-        </div>
-      )}
-
-      {step === 10 && (
-        <div role="status">
-          <h2>Відповіді підтверджено ✅</h2>
+          {resultStatus === 'error' && <p role="alert">Не вдалося відкрити результат. Спробуйте ще раз.</p>}
         </div>
       )}
     </div>
