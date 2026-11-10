@@ -1,5 +1,16 @@
 import { useState, useRef } from 'react';
 
+function normalizeUkrainianMobile(value) {
+  const input = value.trim();
+  if (!/^\+?[\d\s()./-]+$/.test(input)) return null;
+
+  const compact = input.replace(/[\s()./-]/g, '');
+  const national = compact.replace(/^(?:\+380|00380|380)(?=\d{9}$)/, '0');
+  if (!/^0(?:67|68|96|97|98|77|50|66|95|99|75|63|73|93)\d{7}$/.test(national)) return null;
+
+  return '+38' + national;
+}
+
 export default function Quiz() {
   const [step, setStep] = useState(0);
   const [photo, setPhoto] = useState(null);
@@ -8,6 +19,8 @@ export default function Quiz() {
   const [answers, setAnswers] = useState({});
   const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
+  const [phoneInput, setPhoneInput] = useState('');
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const videoRef = useRef(null);
 
   // Запуск камеры
@@ -126,11 +139,15 @@ export default function Quiz() {
     const email = emailInput.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(email)) return;
+    if (!emailRegex.test(email) || !phone) return;
 
     saveAnswer('email', email);
+    saveAnswer('phone', phone);
     setStep(10);
   };
+
+  const phone = normalizeUkrainianMobile(phoneInput);
+  const showPhoneError = !phone && (phoneTouched || phoneInput.length > 0);
 
   // Проверка email для активации кнопки
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
@@ -369,9 +386,40 @@ export default function Quiz() {
 
           <br />
 
+          <div style={{ maxWidth: '320px', margin: '4px auto 14px', textAlign: 'left' }}>
+            <label htmlFor="quiz-phone" style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              Номер мобільного телефону
+            </label>
+            <input
+              id="quiz-phone"
+              type="tel"
+              autoComplete="tel"
+              value={phoneInput}
+              onChange={(event) => setPhoneInput(event.target.value)}
+              onBlur={() => setPhoneTouched(true)}
+              placeholder="+380 67 123 45 67"
+              required
+              aria-invalid={showPhoneError}
+              aria-describedby={showPhoneError ? 'quiz-phone-error' : undefined}
+              style={{
+                boxSizing: 'border-box',
+                padding: '12px',
+                width: '100%',
+                borderRadius: '6px',
+                border: showPhoneError ? '1px solid #a1213a' : '1px solid #ccc',
+                fontSize: '16px',
+              }}
+            />
+            {showPhoneError && (
+              <p id="quiz-phone-error" style={{ color: '#a1213a', margin: '6px 0 0' }}>
+                Введіть український мобільний номер, наприклад +380 67 123 45 67.
+              </p>
+            )}
+          </div>
+
           <button
             onClick={saveEmail}
-            disabled={!isEmailValid}
+            disabled={!isEmailValid || !phone}
           >
             Далі
           </button>
@@ -393,6 +441,7 @@ export default function Quiz() {
           <p><strong>Алергії:</strong> {answers.hasAllergies}</p>
           <p><strong>Ім'я:</strong> {answers.name}</p>
           <p><strong>E-mail:</strong> {answers.email}</p>
+          <p><strong>Номер телефону:</strong> {answers.phone}</p>
 
           <button
             type="button"
