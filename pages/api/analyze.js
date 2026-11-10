@@ -1,3 +1,5 @@
+import { sealAnalysis } from "./quiz/result";
+
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
@@ -38,7 +40,7 @@ export default async function handler(req, res) {
       return res.status(422).json({ success: false, error: "Face++ returned no recognized skin result", diagnostics });
     }
 
-    return res.status(200).json({ success: true, details: result, diagnostics });
+    return res.status(200).json({ success: true, details: result, diagnostics, analysisToken: process.env.VERCEL_ENV === 'preview' ? sealAnalysis(result) : undefined });
   } catch {
     return res.status(502).json({ success: false, error: "Face++ response unavailable" });
   }
