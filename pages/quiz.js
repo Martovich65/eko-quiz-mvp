@@ -381,7 +381,9 @@ export default function Quiz() {
       {/* Экран проверки */}
       {step === 10 && (
         <div>
-          <h2>Відповіді збережено ✅</h2>
+          <h2 style={{ maxWidth: '540px', margin: '0 auto 24px', fontSize: 'clamp(24px, 5vw, 32px)', lineHeight: 1.25, color: '#2f2c3e' }}>
+            Перевірте свої відповіді та підтвердіть, що вони справжні
+          </h2>
 
           <p><strong>Тип шкіри:</strong> {answers.skinType}</p>
           <p><strong>Головна проблема:</strong> {answers.mainProblem}</p>
@@ -392,7 +394,32 @@ export default function Quiz() {
           <p><strong>Ім'я:</strong> {answers.name}</p>
           <p><strong>E-mail:</strong> {answers.email}</p>
 
-          <p>Далі буде Крок 9 із 9.</p>
+          <button
+            type="button"
+            onClick={() => setStep(11)}
+            style={{
+              width: '100%',
+              maxWidth: '360px',
+              minHeight: '48px',
+              marginTop: '12px',
+              padding: '12px 20px',
+              border: 0,
+              borderRadius: '10px',
+              backgroundColor: '#63213f',
+              color: '#fff',
+              fontSize: '16px',
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            Підтвердити відповіді
+          </button>
+        </div>
+      )}
+
+      {step === 11 && (
+        <div role="status">
+          <h2>Відповіді підтверджено ✅</h2>
         </div>
       )}
     </div>
