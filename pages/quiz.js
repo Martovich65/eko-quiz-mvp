@@ -124,28 +124,6 @@ export default function Quiz() {
     setStep(8);
   };
 
-  // Крок 7
-  const saveName = () => {
-    const name = nameInput.trim();
-
-    if (!name) return;
-
-    saveAnswer('name', name);
-    setStep(9);
-  };
-
-  // Крок 8
-  const saveEmail = () => {
-    const email = emailInput.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email) || !phone) return;
-
-    saveAnswer('email', email);
-    saveAnswer('phone', phone);
-    setStep(10);
-  };
-
   const phone = normalizeUkrainianMobile(phoneInput);
   const showPhoneError = !phone && (phoneTouched || phoneInput.length > 0);
 
@@ -153,6 +131,20 @@ export default function Quiz() {
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
     emailInput.trim()
   );
+
+  const canContinue = Boolean(nameInput.trim() && isEmailValid && phone);
+
+  const saveContact = () => {
+    if (!canContinue) return;
+
+    setAnswers((previous) => ({
+      ...previous,
+      name: nameInput.trim(),
+      email: emailInput.trim(),
+      phone,
+    }));
+    setStep(9);
+  };
 
   return (
     <div
@@ -242,7 +234,7 @@ export default function Quiz() {
       {/* Крок 1 */}
       {step === 2 && (
         <div>
-          <h2>Крок 1 із 9</h2>
+          <h2>Крок 1 із 8</h2>
           <h3>Який у вас тип шкіри?</h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '300px', margin: '20px auto' }}>
@@ -257,7 +249,7 @@ export default function Quiz() {
       {/* Крок 2 */}
       {step === 3 && (
         <div>
-          <h2>Крок 2 із 9</h2>
+          <h2>Крок 2 із 8</h2>
           <h3>Яка ваша головна проблема?</h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
@@ -277,7 +269,7 @@ export default function Quiz() {
       {/* Крок 3 */}
       {step === 4 && (
         <div>
-          <h2>Крок 3 із 9</h2>
+          <h2>Крок 3 із 8</h2>
           <h3>Як шкіра реагує на воду?</h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
@@ -292,7 +284,7 @@ export default function Quiz() {
       {/* Крок 4 */}
       {step === 5 && (
         <div>
-          <h2>Крок 4 із 9</h2>
+          <h2>Крок 4 із 8</h2>
           <h3>Який результат ви хочете отримати?</h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
@@ -306,7 +298,7 @@ export default function Quiz() {
       {/* Крок 5 */}
       {step === 6 && (
         <div>
-          <h2>Крок 5 із 9</h2>
+          <h2>Крок 5 із 8</h2>
           <h3>Оберіть вашу вікову категорію</h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
@@ -321,7 +313,7 @@ export default function Quiz() {
       {/* Крок 6 */}
       {step === 7 && (
         <div>
-          <h2>Крок 6 із 9</h2>
+          <h2>Крок 6 із 8</h2>
           <h3>Чи є у вас алергії?</h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '20px auto' }}>
@@ -334,57 +326,39 @@ export default function Quiz() {
       {/* Крок 7 */}
       {step === 8 && (
         <div>
-          <h2>Крок 7 із 9</h2>
-          <h3>Введіть ваше ім'я</h3>
+          <h2>Крок 7 із 8</h2>
+          <h3>Введіть ваші контактні дані</h3>
 
-          <input
-            type="text"
-            value={nameInput}
-            onChange={(e) => setNameInput(e.target.value)}
-            placeholder="Ваше ім'я"
-            style={{
-              padding: '12px',
-              width: '100%',
-              maxWidth: '320px',
-              marginBottom: '10px',
-              borderRadius: '6px',
-              border: '1px solid #ccc',
-            }}
-          />
+          <div style={{ maxWidth: '320px', margin: '0 auto 14px', textAlign: 'left' }}>
+            <label htmlFor="quiz-name" style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              Ваше ім'я
+            </label>
+            <input
+              id="quiz-name"
+              type="text"
+              autoComplete="given-name"
+              value={nameInput}
+              onChange={(event) => setNameInput(event.target.value)}
+              required
+              style={{ boxSizing: 'border-box', width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #ccc', fontSize: '16px' }}
+            />
+          </div>
 
-          <br />
-
-          <button
-            onClick={saveName}
-            disabled={!nameInput.trim()}
-          >
-            Далі
-          </button>
-        </div>
-      )}
-
-      {/* Крок 8 */}
-      {step === 9 && (
-        <div>
-          <h2>Крок 8 із 9</h2>
-          <h3>Введіть ваш E-mail</h3>
-
-          <input
-            type="email"
-            value={emailInput}
-            onChange={(e) => setEmailInput(e.target.value)}
-            placeholder="example@email.com"
-            style={{
-              padding: '12px',
-              width: '100%',
-              maxWidth: '320px',
-              marginBottom: '10px',
-              borderRadius: '6px',
-              border: '1px solid #ccc',
-            }}
-          />
-
-          <br />
+          <div style={{ maxWidth: '320px', margin: '0 auto 14px', textAlign: 'left' }}>
+            <label htmlFor="quiz-email" style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              E-mail
+            </label>
+            <input
+              id="quiz-email"
+              type="email"
+              autoComplete="email"
+              value={emailInput}
+              onChange={(event) => setEmailInput(event.target.value)}
+              placeholder="example@email.com"
+              required
+              style={{ boxSizing: 'border-box', width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #ccc', fontSize: '16px' }}
+            />
+          </div>
 
           <div style={{ maxWidth: '320px', margin: '4px auto 14px', textAlign: 'left' }}>
             <label htmlFor="quiz-phone" style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>
@@ -418,8 +392,8 @@ export default function Quiz() {
           </div>
 
           <button
-            onClick={saveEmail}
-            disabled={!isEmailValid || !phone}
+            onClick={saveContact}
+            disabled={!canContinue}
           >
             Далі
           </button>
@@ -427,8 +401,9 @@ export default function Quiz() {
       )}
 
       {/* Экран проверки */}
-      {step === 10 && (
+      {step === 9 && (
         <div>
+          <p>Крок 8 із 8</p>
           <h2 style={{ maxWidth: '540px', margin: '0 auto 24px', fontSize: 'clamp(24px, 5vw, 32px)', lineHeight: 1.25, color: '#2f2c3e' }}>
             Перевірте свої відповіді та підтвердіть, що вони справжні
           </h2>
@@ -445,7 +420,7 @@ export default function Quiz() {
 
           <button
             type="button"
-            onClick={() => setStep(11)}
+            onClick={() => setStep(10)}
             style={{
               width: '100%',
               maxWidth: '360px',
@@ -466,7 +441,7 @@ export default function Quiz() {
         </div>
       )}
 
-      {step === 11 && (
+      {step === 10 && (
         <div role="status">
           <h2>Відповіді підтверджено ✅</h2>
         </div>
