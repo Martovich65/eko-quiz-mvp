@@ -220,7 +220,6 @@ export default function Quiz() {
                 autoPlay
                 muted
                 playsInline
-                onLoadedData={() => setCameraReady(true)}
                 onPlaying={() => setCameraReady(true)}
                 style={{
                   width: '100%',
@@ -231,13 +230,12 @@ export default function Quiz() {
 
               <br />
 
-              <button
-                onClick={takePhoto}
-                disabled={!cameraReady}
-                style={{ marginTop: '10px' }}
-              >
-                Зробити фото
-              </button>
+              {cameraReady && (
+                <button type="button" onClick={takePhoto} style={{ marginTop: '10px' }}>
+                  Зробити фото
+                </button>
+              )}
+              {!cameraReady && !cameraError && <p role="status">Камера запускається…</p>}
               {cameraError && <p role="alert">{cameraError}</p>}
               {cameraError && <button type="button" onClick={startCamera}>Спробувати ще раз</button>}
             </>
