@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 function normalizeUkrainianMobile(value) {
   const input = value.trim();
@@ -22,35 +22,56 @@ export default function Quiz() {
   const [phoneInput, setPhoneInput] = useState('');
   const [phoneTouched, setPhoneTouched] = useState(false);
   const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const [cameraReady, setCameraReady] = useState(false);
+  const [cameraError, setCameraError] = useState('');
 
-  // Запуск камеры
+  useEffect(() => () => {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+  }, []);
+
+  const attachVideo = useCallback((video) => {
+    videoRef.current = video;
+    if (video && streamRef.current) video.srcObject = streamRef.current;
+  }, []);
+
   const startCamera = async () => {
     setStep(1);
+    setPhoto(null);
+    setCameraReady(false);
+    setCameraError('');
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user' },
-    });
-
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1280 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) videoRef.current.srcObject = stream;
+    } catch {
+      setCameraError('Не вдалося відкрити камеру. Перевірте дозвіл і спробуйте ще раз.');
     }
   };
 
-  // Сделать фото
   const takePhoto = () => {
+    const video = videoRef.current;
+    if (!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
+
     const canvas = document.createElement('canvas');
+    const scale = Math.min(1, 1280 / Math.max(video.videoWidth, video.videoHeight));
+    canvas.width = Math.round(video.videoWidth * scale);
+    canvas.height = Math.round(video.videoHeight * scale);
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const snapshot = canvas.toDataURL('image/jpeg', 0.85);
+    if (!snapshot.startsWith('data:image/jpeg;base64,')) return;
 
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
-
-    canvas.getContext('2d').drawImage(videoRef.current, 0, 0);
-
-    setPhoto(canvas.toDataURL('image/jpeg'));
-
-    // Останавливаем камеру
-    videoRef.current.srcObject
-      .getTracks()
-      .forEach((track) => track.stop());
+    setPhoto(snapshot);
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
   };
 
   // Анализ фото
@@ -177,9 +198,11 @@ export default function Quiz() {
           {!photo ? (
             <>
               <video
-                ref={videoRef}
+                ref={attachVideo}
                 autoPlay
+                muted
                 playsInline
+                onPlaying={() => setCameraReady(true)}
                 style={{
                   width: '100%',
                   maxWidth: '400px',
@@ -189,12 +212,14 @@ export default function Quiz() {
 
               <br />
 
-              <button
-                onClick={takePhoto}
-                style={{ marginTop: '10px' }}
-              >
-                Зробити фото
-              </button>
+              {cameraReady && (
+                <button type="button" onClick={takePhoto} style={{ marginTop: '10px' }}>
+                  Зробити фото
+                </button>
+              )}
+              {!cameraReady && !cameraError && <p role="status">Камера запускається…</p>}
+              {cameraError && <p role="alert">{cameraError}</p>}
+              {cameraError && <button type="button" onClick={startCamera}>Спробувати ще раз</button>}
             </>
           ) : (
             <>
@@ -221,7 +246,8 @@ export default function Quiz() {
               </button>
 
               <button
-                onClick={() => setPhoto(null)}
+                onClick={startCamera}
+                disabled={loading}
                 style={{ marginLeft: '10px' }}
               >
                 Перезняти
